@@ -119,6 +119,7 @@ class _DesktopBody extends StatelessWidget {
                 //     color: Colors.white,
                 //   ),
                 // ),
+
                 // const SizedBox(height: 30),
                 Expanded(child: child),
                 const SizedBox(height: 30),
