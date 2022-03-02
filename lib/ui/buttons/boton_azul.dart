@@ -20,7 +20,7 @@ class CustomElevatedButton extends StatelessWidget {
       // ignore: sized_box_for_whitespace
       child: Container(
         width: double.infinity,
-        height: 55.0,
+        height: 50.0,
         child: Center(
           child: Text(
             text,

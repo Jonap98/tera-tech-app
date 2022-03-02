@@ -1,6 +1,10 @@
-// ignore_for_file: avoid_unnecessary_containers
+// ignore_for_file: avoid_unnecessary_containers, curly_braces_in_flow_control_structures
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tera_tech_app/providers/auth_provider.dart';
+import 'package:tera_tech_app/providers/login_form_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/ui/buttons/boton_azul.dart';
 import 'package:tera_tech_app/ui/inputs/custom_input.dart';
@@ -11,6 +15,8 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
     return Column(
       children: [
         const SizedBox(height: 30),
@@ -28,7 +34,28 @@ class LoginView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 30),
-        Container(
+        ChangeNotifierProvider(
+          create: (_) => LoginFormProvider(),
+          // Se realiza esta implementación del builder ya que el builder
+          // construye primero todo lo que está en el builder, y luego, el
+          //Widget Builder como tal, de esa manera, podemos utilizar:
+          // final provider = Provider.of... de manera similar a como
+          // se hace en el build cuando se crea el view
+
+          // Cree un método porque ya había crecido mucho la identación
+          child: formBuilder(authProvider),
+        ),
+      ],
+    );
+  }
+
+  Builder formBuilder(AuthProvider authProvider) {
+    return Builder(
+      builder: (context) {
+        final loginFormProvider =
+            Provider.of<LoginFormProvider>(context, listen: false);
+
+        return Container(
           //Mío
           // padding: const EdgeInsets.all(30),
           // Fernando
@@ -39,7 +66,7 @@ class LoginView extends StatelessWidget {
             // child: MyForm(),
             // Implementación Fernando Herrera
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 370, maxHeight: 300),
+              constraints: const BoxConstraints(maxWidth: 370, maxHeight: 330),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
@@ -55,48 +82,77 @@ class LoginView extends StatelessWidget {
                   ],
                 ),
                 child: Form(
+                    key: loginFormProvider.formKey,
+                    // autovalidateMode: AutovalidateMode.always,
                     child: Column(
-                  children: [
-                    TextFormField(
-                      // validator: ,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: buildInputDecoration(
-                        hint: 'Ingrese su correo',
-                        label: 'Email',
-                        icon: Icons.mail,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      // validator: ,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: buildInputDecoration(
-                        hint: 'Ingrese su contraseña',
-                        label: 'Password',
-                        icon: Icons.lock,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    CustomElevatedButton(
-                      // color: Colors.pinkAccent,
-                      // isFilled: false,
-                      text: 'Ingresar',
-                      onPressed: () {},
-                    ),
-                    const SizedBox(height: 10),
-                    Labels(
-                      pregunta: '¿Aún no tienes una cuenta?',
-                      boton: 'Registrate.',
-                      onTap: () => Navigator.pushNamed(
-                          context, Flurorouter.registerRoute),
-                    ),
-                  ],
-                )),
+                      children: [
+                        // Campo Email
+                        TextFormField(
+                          onChanged: (value) => loginFormProvider.email = value,
+                          validator: (value) {
+                            if (!EmailValidator.validate(value ?? ''))
+                              return 'Email no válido';
+                            else
+                              return null;
+                          },
+                          style: const TextStyle(),
+                          decoration: buildInputDecoration(
+                            hint: 'Ingrese su correo',
+                            label: 'Email',
+                            icon: Icons.mail,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+
+                        // Campo contraseña
+                        TextFormField(
+                          onChanged: (value) =>
+                              loginFormProvider.password = value,
+                          validator: (value) {
+                            if (value == null || value.isEmpty)
+                              return 'La contraseña es obligatoria';
+                            if (value.length < 6)
+                              return 'La contraseña debe tener 6 caracteres';
+
+                            return null; // Válido, ya que devuelve el error
+                          },
+                          style: const TextStyle(),
+                          decoration: buildInputDecoration(
+                            hint: 'Ingrese su contraseña',
+                            label: 'Password',
+                            icon: Icons.lock,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        CustomElevatedButton(
+                          // color: Colors.pinkAccent,
+                          // isFilled: false,
+                          text: 'Ingresar',
+                          onPressed: () {
+                            final isValidForm =
+                                loginFormProvider.validateForm();
+                            if (isValidForm)
+                              authProvider.login(
+                                loginFormProvider.email,
+                                loginFormProvider.password,
+                              );
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        Labels(
+                          pregunta: '¿Aún no tienes una cuenta?',
+                          boton: 'Registrate.',
+                          // Es valido usar pushNamed en vistas del mismo layout
+                          onTap: () => Navigator.pushNamed(
+                              context, Flurorouter.registerRoute),
+                        ),
+                      ],
+                    )),
               ),
             ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 

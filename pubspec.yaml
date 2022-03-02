@@ -28,11 +28,12 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cupertino_icons: ^1.0.2
+  email_validator: ^2.0.1
   fluro: null
-  # google_fonts: 
-
   flutter:
     sdk: flutter
+  provider: ^6.0.2
+  shared_preferences: ^2.0.13
 
 dev_dependencies:
   flutter_lints: ^1.0.0

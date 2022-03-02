@@ -37,31 +37,18 @@ class _MobileBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Container(
       color: const Color(0xff0A1E3C),
       child: Column(
           // mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // SizedBox(height: 20),
-            // CustomTitle(),
-            Image.asset(
-              'Logo.png',
-              width: 150,
-              height: 150,
-            ),
-            const Text(
-              'Iniciar sesión',
-              style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
             // ignore: sized_box_for_whitespace
             Container(
               width: double.infinity,
-              height: 420,
+              height: size.height,
               child: child,
             ),
             // Container(
