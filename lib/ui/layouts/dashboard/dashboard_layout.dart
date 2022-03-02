@@ -10,9 +10,15 @@ class DashboardLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text('Dashboard', style: TextStyle(fontSize: 20)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Dashboard', style: TextStyle(fontSize: 20)),
+            Expanded(child: child),
+          ],
+        ),
       ),
     );
   }

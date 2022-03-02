@@ -1,7 +1,9 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/services/local_storage.dart';
+import 'package:tera_tech_app/services/navigation_service.dart';
 
 enum AuthStatus {
   checking,
@@ -24,9 +26,14 @@ class AuthProvider extends ChangeNotifier {
     _token = 'askdjaskñañadskddñ.askjñasldaaSÑakd.aiuscsmkjjasajhasksajdlj';
     LocalStorage.prefs.setString('token', _token!);
 
+    // Cambia el estado, se verifica en el main y automáticamente determina
+    // el layout al que redirecciona
+    authStatus = AuthStatus.authenticated;
+    notifyListeners();
     // Navegar al dashboard
 
-    notifyListeners();
+    // Esto solo cambia el URL
+    NavigationService.replaceTo(Flurorouter.dashboardRoute);
   }
 
   Future<bool> isAuthenticated() async {

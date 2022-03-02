@@ -10,6 +10,7 @@ import 'package:tera_tech_app/services/local_storage.dart';
 
 import 'package:tera_tech_app/ui/layouts/auth/auth_layout.dart';
 import 'package:tera_tech_app/ui/layouts/dashboard/dashboard_layout.dart';
+import 'package:tera_tech_app/ui/layouts/splash/splash_layout.dart';
 
 void main() async {
   await LocalStorage.configurePrefs();
@@ -49,9 +50,7 @@ class MyApp extends StatelessWidget {
         final authProvider = Provider.of<AuthProvider>(context);
 
         if (authProvider.authStatus == AuthStatus.checking)
-          return const Center(
-            child: Text('Checking'),
-          );
+          return const SplashLayout();
 
         if (authProvider.authStatus == AuthStatus.authenticated) {
           return DashboardLayout(child: child!);
