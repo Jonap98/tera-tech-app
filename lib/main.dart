@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tera_tech_app/api/cafe_api.dart';
 import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/providers/auth_provider.dart';
 
@@ -14,6 +15,7 @@ import 'package:tera_tech_app/ui/layouts/splash/splash_layout.dart';
 
 void main() async {
   await LocalStorage.configurePrefs();
+  CafeApi.configureDio();
   Flurorouter.configureRoutes();
   runApp(const AppState());
 }

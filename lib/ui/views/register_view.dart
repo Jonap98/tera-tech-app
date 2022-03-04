@@ -19,7 +19,7 @@ class RegisterView extends StatelessWidget {
         children: [
           const SizedBox(height: 10),
           Image.asset(
-            'Logo.png',
+            'WhiteLogo.png',
             width: 150,
             height: 100,
           ),
@@ -134,6 +134,7 @@ class RegisterView extends StatelessWidget {
                         const SizedBox(height: 10),
                         // Contraseña
                         TextFormField(
+                          obscureText: true,
                           onChanged: (value) =>
                               registerFormProvider.password = value,
                           validator: (value) {
@@ -153,6 +154,7 @@ class RegisterView extends StatelessWidget {
                         const SizedBox(height: 10),
                         // Confirmar contraseña
                         TextFormField(
+                          obscureText: true,
                           onChanged: (value) =>
                               registerFormProvider.passwordConfirmation = value,
                           validator: (value) {

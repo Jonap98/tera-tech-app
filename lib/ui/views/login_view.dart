@@ -21,7 +21,7 @@ class LoginView extends StatelessWidget {
       children: [
         const SizedBox(height: 30),
         Image.asset(
-          'Logo.png',
+          'WhiteLogo.png',
           width: 150,
           height: 100,
         ),
@@ -106,6 +106,7 @@ class LoginView extends StatelessWidget {
 
                         // Campo contraseña
                         TextFormField(
+                          obscureText: true,
                           onChanged: (value) =>
                               loginFormProvider.password = value,
                           validator: (value) {

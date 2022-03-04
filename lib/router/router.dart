@@ -15,6 +15,8 @@ class Flurorouter {
 
   // Dashboard
   static String dashboardRoute = '/dashboard';
+  // Solicitar soporte
+  static String solicitarSoporteRoute = '/solicitar-soporte';
 
   static configureRoutes() {
     // Auth routes
@@ -34,6 +36,10 @@ class Flurorouter {
     // Dashboard
     router.define(dashboardRoute,
         handler: DashboardHandlers.dashboard,
+        transitionType: TransitionType.fadeIn);
+
+    router.define(solicitarSoporteRoute,
+        handler: DashboardHandlers.solicitarSoporte,
         transitionType: TransitionType.fadeIn);
 
     // 404
