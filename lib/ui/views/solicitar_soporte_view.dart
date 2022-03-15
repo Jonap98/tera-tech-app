@@ -1,5 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:tera_tech_app/router/router.dart';
+import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/ui/buttons/boton_azul.dart';
 
 class SolicitarSoporteView extends StatelessWidget {
@@ -35,11 +37,13 @@ class SolicitarSoporteView extends StatelessWidget {
             const SizedBox(height: 20),
             textFormField(),
             const SizedBox(height: 20),
-            FileUpload(),
+            const FileUpload(),
             const SizedBox(height: 20),
             CustomElevatedButton(
               text: 'Solicitar soporte',
-              onPressed: () {},
+              onPressed: () =>
+                  // Navigator.pushNamed(context, Flurorouter.estadosSoporteRoute),
+                  NavigationService.navigateTo(Flurorouter.estadosSoporteRoute),
             ),
           ],
         ),

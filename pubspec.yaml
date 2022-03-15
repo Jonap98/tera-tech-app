@@ -36,6 +36,7 @@ dependencies:
     sdk: flutter
   provider: ^6.0.2
   shared_preferences: ^2.0.13
+  date_time_picker: "^2.1.0"
 
 dev_dependencies:
   flutter_lints: ^1.0.0
