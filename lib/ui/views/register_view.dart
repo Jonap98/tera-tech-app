@@ -3,6 +3,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tera_tech_app/providers/auth_provider.dart';
 import 'package:tera_tech_app/providers/register_form_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/ui/buttons/boton_azul.dart';
@@ -177,9 +178,21 @@ class RegisterView extends StatelessWidget {
                         CustomElevatedButton(
                           // color: Colors.pinkAccent,
                           // isFilled: false,
-                          text: 'Ingresar',
+                          text: 'Registrar',
                           onPressed: () {
-                            registerFormProvider.validateForm();
+                            final validForm =
+                                registerFormProvider.validateForm();
+                            if (!validForm) return;
+
+                            final authProvider = Provider.of<AuthProvider>(
+                                context,
+                                listen: false);
+                            authProvider.register(
+                              registerFormProvider.name,
+                              registerFormProvider.lastName,
+                              registerFormProvider.email,
+                              registerFormProvider.password,
+                            );
                           },
                         ),
                         const SizedBox(height: 10),

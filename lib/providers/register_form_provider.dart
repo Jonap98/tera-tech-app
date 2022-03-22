@@ -13,10 +13,12 @@ class RegisterFormProvider extends ChangeNotifier {
 
   validateForm() {
     if (formKey.currentState!.validate()) {
-      print('$name\n$lastName\n$email\n$password\n$passwordConfirmation');
-      print('Valid form');
+      // print('$name\n$lastName\n$email\n$password\n$passwordConfirmation');
+      // print('Valid form');
+      return true;
     } else {
-      print('Not valid');
+      // print('Not valid');
+      return false;
     }
   }
 }

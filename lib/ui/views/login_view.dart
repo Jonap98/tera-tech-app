@@ -132,11 +132,12 @@ class LoginView extends StatelessWidget {
                           onPressed: () {
                             final isValidForm =
                                 loginFormProvider.validateForm();
-                            if (isValidForm)
-                              authProvider.login(
-                                loginFormProvider.email,
-                                loginFormProvider.password,
-                              );
+                            if (!isValidForm) return;
+
+                            authProvider.login(
+                              loginFormProvider.email,
+                              loginFormProvider.password,
+                            );
                           },
                         ),
                         const SizedBox(height: 10),

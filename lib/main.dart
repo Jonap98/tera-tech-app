@@ -2,13 +2,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:tera_tech_app/api/cafe_api.dart';
+
 import 'package:tera_tech_app/helpers/my_custom_scroll_behavior.dart';
 import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/providers/auth_provider.dart';
 
 import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/services/local_storage.dart';
+import 'package:tera_tech_app/services/notification_service.dart';
 
 import 'package:tera_tech_app/ui/layouts/auth/auth_layout.dart';
 import 'package:tera_tech_app/ui/layouts/dashboard/dashboard_layout.dart';
@@ -49,6 +52,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       onGenerateRoute: Flurorouter.router.generator,
       navigatorKey: NavigationService.navigatorKey,
+      scaffoldMessengerKey: NotificationService.messengerKey,
       builder: (_, child) {
         final authProvider = Provider.of<AuthProvider>(context);
 

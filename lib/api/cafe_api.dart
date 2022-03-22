@@ -12,6 +12,8 @@ class CafeApi {
 
     // Headers
     _dio.options.headers = {
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
       'Authorization': 'Bearer ${LocalStorage.prefs.getString('key')}'
     };
   }
@@ -22,8 +24,21 @@ class CafeApi {
 
       return resp.data;
     } catch (e) {
-      print(e);
+      // print(e);
       throw ('Error en el GET');
+    }
+  }
+
+  static Future httpPost(String path, Map<String, dynamic> data) async {
+    final formData = FormData.fromMap(data);
+
+    try {
+      final resp = await _dio.post(path, data: formData);
+
+      return resp.data;
+    } catch (e) {
+      // print(e);
+      throw ('Error en el POST');
     }
   }
 }
