@@ -10,6 +10,7 @@ import 'package:tera_tech_app/ui/views/login_view.dart';
 import 'package:tera_tech_app/ui/views/solicitar_soporte_view.dart';
 import 'package:tera_tech_app/ui/views/soporte_estado_view.dart';
 import 'package:tera_tech_app/ui/views/ticket_view.dart';
+import 'package:tera_tech_app/ui/views/white_view.dart';
 
 class DashboardHandlers {
   static Handler dashboard = Handler(
@@ -27,7 +28,7 @@ class DashboardHandlers {
     handlerFunc: (context, params) {
       final authProvider = Provider.of<AuthProvider>(context!);
       if (authProvider.authStatus == AuthStatus.authenticated)
-        return const SolicitarSoporteView();
+        return SolicitarSoporteView();
       else
         return const LoginView();
     },
@@ -72,6 +73,17 @@ class DashboardHandlers {
       final authProvider = Provider.of<AuthProvider>(context!);
       if (authProvider.authStatus == AuthStatus.authenticated)
         return const HistoricoDeTicketsView();
+      else
+        return const LoginView();
+    },
+  );
+
+  // White
+  static Handler white = Handler(
+    handlerFunc: (context, params) {
+      final authProvider = Provider.of<AuthProvider>(context!);
+      if (authProvider.authStatus == AuthStatus.authenticated)
+        return const WhiteView();
       else
         return const LoginView();
     },

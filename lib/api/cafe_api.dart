@@ -14,7 +14,7 @@ class CafeApi {
     _dio.options.headers = {
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
-      'Authorization': 'Bearer ${LocalStorage.prefs.getString('key')}'
+      'Authorization': 'Bearer ${LocalStorage.prefs.getString('token')}'
     };
   }
 

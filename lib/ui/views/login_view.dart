@@ -20,11 +20,17 @@ class LoginView extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 30),
-        Image.asset(
-          'WhiteLogo.png',
+        const Image(
+          image: AssetImage('assets/WhiteLogo.png'),
           width: 150,
           height: 100,
         ),
+
+        // Image.asset(
+        //   'WhiteLogo.png',
+        //   width: 150,
+        //   height: 100,
+        // ),
         const Text(
           'Iniciar sesión',
           style: TextStyle(
@@ -179,6 +185,13 @@ class LoginView extends StatelessWidget {
       labelStyle: const TextStyle(color: Colors.grey),
     );
   }
+
+  // void onFormSubmit(
+  //     LoginFormProvider loginFormProvider, AuthProvider authProvider) {
+  //   final isValid = loginFormProvider.validateForm();
+  //   if (isValid)
+  //     authProvider.login(loginFormProvider.email, loginFormProvider.password);
+  // }
 }
 
 class MyForm extends StatelessWidget {

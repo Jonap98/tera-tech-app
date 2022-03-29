@@ -1,8 +1,11 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tera_tech_app/providers/auth_provider.dart';
 import 'package:tera_tech_app/providers/side_menu_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
+import 'package:tera_tech_app/services/local_storage.dart';
 import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/ui/shared/widgets/logo.dart';
 
@@ -11,18 +14,24 @@ class Sidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final authProvider = Provider.of<AuthProvider>(context);
+    final idRol = LocalStorage.prefs.getInt('rol');
+
     return Container(
       width: 200,
       height: double.infinity,
       // color: Colors.redAccent,
       decoration: buildBoxDecoration(),
-      child: ListView(
-        physics: const ClampingScrollPhysics(),
+      child: Column(
+        // physics: const ClampingScrollPhysics(),
         children: [
           GestureDetector(
             onTap: () {
               SideMenuProvider.closeMenu();
-              NavigationService.navigateTo(Flurorouter.dashboardRoute);
+              (idRol == 3)
+                  ? NavigationService.navigateTo(Flurorouter.dashboardRoute)
+                  : NavigationService.navigateTo(
+                      Flurorouter.estadosSoporteRoute);
             },
             child: const MouseRegion(
               cursor: SystemMouseCursors.click,
@@ -30,23 +39,37 @@ class Sidebar extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 50),
-          SidebarOption(
-            icon: Icons.home_repair_service_rounded,
-            text: 'Solicitar soporte',
-            onTap: () {
-              SideMenuProvider.closeMenu();
-              NavigationService.navigateTo(Flurorouter.solicitarSoporteRoute);
-            },
-          ),
-          const SizedBox(height: 10),
+          (idRol == 3)
+              ? SidebarOption(
+                  icon: Icons.home_repair_service_rounded,
+                  text: 'Solicitar soporte',
+                  onTap: () {
+                    SideMenuProvider.closeMenu();
+                    NavigationService.navigateTo(
+                        Flurorouter.solicitarSoporteRoute);
+                  },
+                )
+              // : Container(),
+              // const SizedBox(height: 10),
+              : SidebarOption(
+                  icon: Icons.list_alt,
+                  text: 'Tickets histórico',
+                  onTap: () {
+                    // SideMenuProvider.closeMenu();
+                    // NavigationService.navigateTo(Flurorouter.historicoDeTicketsRoute);
+                  },
+                ),
+          const Spacer(),
           SidebarOption(
             icon: Icons.list_alt,
-            text: 'Tickets histórico',
+            text: 'Cerrar sesión',
             onTap: () {
-              SideMenuProvider.closeMenu();
-              NavigationService.navigateTo(Flurorouter.historicoDeTicketsRoute);
+              Provider.of<AuthProvider>(context, listen: false).logout();
+              // SideMenuProvider.closeMenu();
+              // NavigationService.navigateTo(Flurorouter.historicoDeTicketsRoute);
             },
           ),
+          const SizedBox(height: 30),
           // Opciones del sidebar
           // TextSeparator(text: ''),
           // MenuItem(text: '',icon: Icon, onPressed: (){}) // Crear en shared-widgets

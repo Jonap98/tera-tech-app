@@ -15,7 +15,7 @@ enum AuthStatus {
 }
 
 class AuthProvider extends ChangeNotifier {
-  String? _token;
+  // String? _token;
   AuthStatus authStatus = AuthStatus.checking;
   CurrentUser? user;
 
@@ -34,9 +34,20 @@ class AuthProvider extends ChangeNotifier {
       user = authResponse.data.currentUser;
 
       authStatus = AuthStatus.authenticated;
+      LocalStorage.prefs.setInt('id_usuario', authResponse.data.currentUser.id);
       LocalStorage.prefs.setString('token', authResponse.data.accessToken);
+      LocalStorage.prefs.setString('name', authResponse.data.currentUser.name);
+      LocalStorage.prefs
+          .setString('lastName', authResponse.data.currentUser.lastName);
+      LocalStorage.prefs.setInt('rol', authResponse.data.currentUser.idRol);
       // Guardar otros datos
-      NavigationService.replaceTo(Flurorouter.dashboardRoute);
+      (authResponse.data.currentUser.idRol == 3)
+          ? NavigationService.replaceTo(Flurorouter.dashboardRoute)
+          : NavigationService.replaceTo(Flurorouter.whiteRoute);
+      // NavigationService.replaceTo(Flurorouter.whiteRoute);
+
+      CafeApi.configureDio();
+
       notifyListeners();
     }).catchError(
       (e) {
@@ -78,9 +89,18 @@ class AuthProvider extends ChangeNotifier {
       user = authResponse.data.currentUser;
 
       authStatus = AuthStatus.authenticated;
+      LocalStorage.prefs.setInt('id_usuario', authResponse.data.currentUser.id);
       LocalStorage.prefs.setString('token', authResponse.data.accessToken);
+      LocalStorage.prefs.setString('name', authResponse.data.currentUser.name);
+      LocalStorage.prefs
+          .setString('lastName', authResponse.data.currentUser.lastName);
+      LocalStorage.prefs.setInt('rol', authResponse.data.currentUser.idRol);
       // Guardar otros datos
       NavigationService.replaceTo(Flurorouter.dashboardRoute);
+      // NavigationService.replaceTo(Flurorouter.whiteRoute);
+
+      CafeApi.configureDio();
+
       notifyListeners();
     }).catchError(
       (e) {
@@ -101,11 +121,39 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
 
+    // Sesión activa durante token válido
     // Comprobar JWT válido
+    // try {
+    //   final resp = await CafeApi.httpGet('/auth');
+    //   final authResponse = AuthResponse.fromMap(resp);
+
+    //   user = authResponse.data.currentUser;
+    //   authStatus = AuthStatus.authenticated;
+    //   notifyListeners();
+    //   return true;
+    // } catch (e) {
+    //   // print(e);
+    //   authStatus = AuthStatus.notAuthenticated;
+    //   notifyListeners();
+    //   return false;
+    // }
+
+    // Sesión activa hasta logout manual, mediante token existente
     await Future.delayed(const Duration(milliseconds: 1000));
     authStatus = AuthStatus.authenticated;
     notifyListeners();
 
     return true;
+  }
+
+  logout() {
+    LocalStorage.prefs.remove('id_usuario');
+    LocalStorage.prefs.remove('token');
+    LocalStorage.prefs.remove('rol');
+    LocalStorage.prefs.remove('name');
+    LocalStorage.prefs.remove('lastName');
+    authStatus = AuthStatus.notAuthenticated;
+    notifyListeners();
+    NavigationService.replaceTo(Flurorouter.loginRoute);
   }
 }

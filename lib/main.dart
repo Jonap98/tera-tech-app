@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:tera_tech_app/api/cafe_api.dart';
 
 import 'package:tera_tech_app/helpers/my_custom_scroll_behavior.dart';
+import 'package:tera_tech_app/providers/solicitudes_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/providers/auth_provider.dart';
 
@@ -34,7 +36,11 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(
           lazy: false, // al iniciar la ppa inicia el proceso de autenticación
           create: (_) => AuthProvider(),
-        )
+        ),
+        ChangeNotifierProvider(
+          lazy: false,
+          create: (_) => SolicitudesProvider(),
+        ),
       ],
       child: const MyApp(),
     );
@@ -47,6 +53,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [GlobalMaterialLocalizations.delegate],
+      supportedLocales: const [Locale('es')],
       debugShowCheckedModeBanner: false,
       title: 'Tera Tech App',
       initialRoute: '/',

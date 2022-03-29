@@ -1,8 +1,8 @@
 // ignore_for_file: sized_box_for_whitespace, prefer_const_constructors, avoid_print, must_be_immutable
 
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
+import 'package:tera_tech_app/ui/layouts/auth/widgets/datetime_picker.dart';
 
 class TicketView extends StatelessWidget {
   const TicketView({Key? key}) : super(key: key);
@@ -188,7 +188,9 @@ class TicketView extends StatelessWidget {
                                                 'Fecha de cierre programado:'),
                                           ),
                                           const SizedBox(height: 15),
-                                          selectDateTime(fechaCierreCtrl),
+                                          CustomDateTimePicker(
+                                              controller: fechaCierreCtrl),
+                                          // selectDateTime(fechaCierreCtrl),
                                           const SizedBox(height: 15),
                                           _textFormField(),
                                           const SizedBox(height: 25),
@@ -227,37 +229,37 @@ class TicketView extends StatelessWidget {
       ),
     );
   }
+// DateTimePicker selectDateTime(TextEditingController controller) {
+  //   return DateTimePicker(
+  //     type: DateTimePickerType.dateTimeSeparate,
+  //     dateMask: 'd MMM, yyyy',
+  //     initialValue: DateTime.now().toString(),
+  //     firstDate: DateTime(2000),
+  //     lastDate: DateTime(2100),
+  //     icon: Icon(Icons.event),
+  //     dateLabelText: 'Fecha',
+  //     timeLabelText: 'Hora',
+  //     selectableDayPredicate: (date) {
+  //       // Deshabilita fines de semana
+  //       // if (date.weekday == 6 ||
+  //       //     date.weekday == 7) {
+  //       //   return false;
+  //       // }
 
-  DateTimePicker selectDateTime(TextEditingController controller) {
-    return DateTimePicker(
-      type: DateTimePickerType.dateTimeSeparate,
-      dateMask: 'd MMM, yyyy',
-      initialValue: DateTime.now().toString(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      icon: Icon(Icons.event),
-      dateLabelText: 'Fecha',
-      timeLabelText: 'Hora',
-      selectableDayPredicate: (date) {
-        // Deshabilita fines de semana
-        // if (date.weekday == 6 ||
-        //     date.weekday == 7) {
-        //   return false;
-        // }
-
-        return true;
-      },
-      // onChanged: (val) => print(val),
-      validator: (val) {
-        // print(val);
-        return null;
-      },
-      onSaved: (val) {
-        controller.text = val!;
-        // print(val);
-      },
-    );
-  }
+  //       return true;
+  //     },
+  //     // onChanged: (val) => print(val),
+  //     validator: (val) {
+  //       // print(val);
+  //       return null;
+  //     },
+  //     onSaved: (val) {
+  //       controller.text = val!;
+  //       // print(val);
+  //     },
+  //   );
+  // }
+  //
 
   TextFormField _textFormField() {
     return TextFormField(

@@ -19,8 +19,8 @@ class RegisterView extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 10),
-          Image.asset(
-            'WhiteLogo.png',
+          const Image(
+            image: AssetImage('assets/WhiteLogo.png'),
             width: 150,
             height: 100,
           ),

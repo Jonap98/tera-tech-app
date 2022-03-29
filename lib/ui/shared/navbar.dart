@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tera_tech_app/providers/side_menu_provider.dart';
+import 'package:tera_tech_app/services/local_storage.dart';
 import 'package:tera_tech_app/ui/shared/widgets/navbar_avatar.dart';
 
 class Navbar extends StatelessWidget {
@@ -7,6 +8,15 @@ class Navbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final name = LocalStorage.prefs.getString('name');
+    final lastName = LocalStorage.prefs.getString('lastName');
+    final idRol = LocalStorage.prefs.getInt('rol');
+    final rol = (idRol == 1)
+        ? 'Administrador'
+        : (idRol == 2)
+            ? 'Técnico'
+            : 'Usuario';
+
     final size = MediaQuery.of(context).size;
 
     return Container(
@@ -38,9 +48,12 @@ class Navbar extends StatelessWidget {
           // const Expanded(child: SizedBox()),
           const Spacer(),
           // NotificationIndicator(), positioned->container->stack,icono-circulo-texto
-          const Text('Mari Jose, Administrador'),
+          Text('$name $lastName, $rol'),
           const SizedBox(width: 10),
-          const NavbarAvatar(),
+          NavbarAvatar(
+            name: name!,
+            lastName: lastName!,
+          ),
           const SizedBox(width: 15),
         ],
       ),
@@ -54,4 +67,10 @@ class Navbar extends StatelessWidget {
           blurRadius: 5,
         ),
       ]);
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
 }
