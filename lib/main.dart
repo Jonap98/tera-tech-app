@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tera_tech_app/api/cafe_api.dart';
 
 import 'package:tera_tech_app/helpers/my_custom_scroll_behavior.dart';
+import 'package:tera_tech_app/providers/recursos_provider.dart';
 import 'package:tera_tech_app/providers/solicitudes_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/providers/auth_provider.dart';
@@ -40,6 +41,10 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(
           lazy: false,
           create: (_) => SolicitudesProvider(),
+        ),
+        ChangeNotifierProvider(
+          lazy: false,
+          create: (_) => RecursosProvider(),
         ),
       ],
       child: const MyApp(),

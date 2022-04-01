@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tera_tech_app/models/clientes_model.dart';
+import 'package:tera_tech_app/models/tecnicos_model.dart';
+import 'package:tera_tech_app/providers/recursos_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
@@ -10,6 +14,9 @@ class EstadosSolicitudesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DatoTecnico? tecnicoSeleccionado;
+    DatoCliente? clienteSeleccionado;
+
     return Container(
       alignment: Alignment.topCenter,
       width: double.infinity,
@@ -28,11 +35,11 @@ class EstadosSolicitudesView extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Container(
-            child: const _CustomDropDown(titulo: 'Seleccionar técnico'),
-            width: 200,
+            child: _DropdownTecnicos(selectedValue: tecnicoSeleccionado),
+            width: 210,
           ),
           Container(
-            child: const _CustomDropDown(titulo: 'Seleccionar cliente'),
+            child: _DropdownClientes(selectedValue: clienteSeleccionado),
             width: 200,
           ),
           ElevatedButton(
@@ -47,8 +54,9 @@ class EstadosSolicitudesView extends StatelessWidget {
                   icon: Icons.markunread,
                   cantidad: 30,
                   onPressed: () {
-                    NavigationService.navigateTo(
-                        Flurorouter.solicitudesEstadosRoute);
+                    NavigationService.navigateTo(Flurorouter.whiteRoute);
+                    // NavigationService.navigateTo(
+                    //     Flurorouter.solicitudesEstadosRoute);
                   }
                   // onPressed: NavigationService.navigateTo(
                   //     Flurorouter.solicitudesEstadosRoute),
@@ -58,40 +66,45 @@ class EstadosSolicitudesView extends StatelessWidget {
                   icon: Icons.drafts,
                   cantidad: 3,
                   onPressed: () {
-                    NavigationService.navigateTo(
-                        Flurorouter.solicitudesEstadosRoute);
+                    NavigationService.navigateTo(Flurorouter.whiteRoute);
+                    // NavigationService.navigateTo(
+                    //     Flurorouter.solicitudesEstadosRoute);
                   }),
               EstadoElement(
                   estado: 'Asignado',
                   icon: Icons.assignment_ind,
                   cantidad: 0,
                   onPressed: () {
-                    NavigationService.navigateTo(
-                        Flurorouter.solicitudesEstadosRoute);
+                    NavigationService.navigateTo(Flurorouter.whiteRoute);
+                    // NavigationService.navigateTo(
+                    //     Flurorouter.solicitudesEstadosRoute);
                   }),
               EstadoElement(
                   estado: 'En espera',
                   icon: Icons.watch_later,
                   cantidad: 9,
                   onPressed: () {
-                    NavigationService.navigateTo(
-                        Flurorouter.solicitudesEstadosRoute);
+                    NavigationService.navigateTo(Flurorouter.whiteRoute);
+                    // NavigationService.navigateTo(
+                    //     Flurorouter.solicitudesEstadosRoute);
                   }),
               EstadoElement(
                   estado: 'Detalle',
                   icon: Icons.assignment_return,
                   cantidad: 5,
                   onPressed: () {
-                    NavigationService.navigateTo(
-                        Flurorouter.solicitudesEstadosRoute);
+                    NavigationService.navigateTo(Flurorouter.whiteRoute);
+                    // NavigationService.navigateTo(
+                    //     Flurorouter.solicitudesEstadosRoute);
                   }),
               EstadoElement(
                   estado: 'Listo',
                   icon: Icons.assignment_turned_in,
                   cantidad: 10,
                   onPressed: () {
-                    NavigationService.navigateTo(
-                        Flurorouter.solicitudesEstadosRoute);
+                    NavigationService.navigateTo(Flurorouter.whiteRoute);
+                    // NavigationService.navigateTo(
+                    //     Flurorouter.solicitudesEstadosRoute);
                   }),
             ],
           ),
@@ -195,58 +208,173 @@ class NotificationCount extends StatelessWidget {
   }
 }
 
-class _CustomDropDown extends StatefulWidget {
-  final String titulo;
+class _DropdownClientes extends StatefulWidget {
+  DatoCliente? selectedValue;
 
-  const _CustomDropDown({
+  _DropdownClientes({
     Key? key,
-    this.titulo = 'Seleccionar',
+    this.selectedValue,
   }) : super(key: key);
 
   @override
-  State<_CustomDropDown> createState() => _CustomDropDownState();
+  State<_DropdownClientes> createState() => _DropdownClientesState();
 }
 
-class _CustomDropDownState extends State<_CustomDropDown> {
-  String? selectedValue;
-  final opciones = [
-    'Opción 1',
-    'Opción 2',
-    'Opción 3',
-    'Opción 4',
-    'Opción 5',
-  ];
+class _DropdownClientesState extends State<_DropdownClientes> {
+  // String? selectedValue;
+  // final opciones = [
+  //   'Opción 1',
+  //   'Opción 2',
+  //   'Opción 3',
+  //   'Opción 4',
+  //   'Opción 5',
+  // ];
+
+  late Future<List<DatoCliente>> clientes;
+  @override
+  void initState() {
+    super.initState();
+    clientes =
+        Provider.of<RecursosProvider>(context, listen: false).getClientes();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField(
-      hint: Text(widget.titulo),
-      validator: (value) => value == null ? widget.titulo : null,
-      value: selectedValue,
-      // value: (dropdownValue != '') ? '' : 'Selecciona una categoría',
-      decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xffEDF1F2), width: 2),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xffEDF1F2), width: 2),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        filled: true,
-        fillColor: const Color(0xffEDF1F2),
-      ),
-      dropdownColor: const Color(0xffEDF1F2),
-      icon: const Icon(Icons.arrow_drop_down),
-      items: opciones.map((String opciones) {
-        return DropdownMenuItem(
-          value: opciones,
-          child: Text(opciones),
-        );
-      }).toList(),
-      onChanged: (String? newValue) {
-        selectedValue = newValue!;
-        setState(() {});
+    return FutureBuilder<List<DatoCliente>>(
+      future: clientes,
+      builder: (context, AsyncSnapshot<List<DatoCliente>> snapshot) {
+        if (snapshot.hasData) {
+          return DropdownButtonFormField<DatoCliente>(
+            hint: const Text('Selecciona un cliente'),
+            value: widget.selectedValue,
+            // value: (selectedValue != '') ? '' : 'Selecciona una categoría',
+            decoration: InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderSide:
+                    const BorderSide(color: Color(0xffEDF1F2), width: 2),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              border: OutlineInputBorder(
+                borderSide:
+                    const BorderSide(color: Color(0xffEDF1F2), width: 2),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              filled: true,
+              fillColor: const Color(0xffEDF1F2),
+            ),
+            dropdownColor: const Color(0xffEDF1F2),
+            icon: const Icon(Icons.arrow_drop_down),
+            items: snapshot.data!
+                .map<DropdownMenuItem<DatoCliente>>((DatoCliente opcion) {
+              return DropdownMenuItem(
+                value: opcion,
+                child: Text(opcion.name),
+              );
+            }).toList(),
+            // items: opciones.map((String opciones) {
+            //   return DropdownMenuItem(
+            //     value: opciones,
+            //     child: Text(opciones),
+            //   );
+            // }).toList(),
+            onChanged: (DatoCliente? newValue) {
+              widget.selectedValue = newValue!;
+              // print(selectedValue!.id);
+              // print(selectedValue!.nombre);
+              Provider.of<RecursosProvider>(context, listen: false)
+                  .cargarCliente(widget.selectedValue!);
+              setState(() {});
+            },
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+}
+
+class _DropdownTecnicos extends StatefulWidget {
+  DatoTecnico? selectedValue;
+
+  _DropdownTecnicos({
+    Key? key,
+    this.selectedValue,
+  }) : super(key: key);
+
+  @override
+  State<_DropdownTecnicos> createState() => _DropdownTecnicosState();
+}
+
+class _DropdownTecnicosState extends State<_DropdownTecnicos> {
+  // String? selectedValue;
+  // final opciones = [
+  //   'Opción 1',
+  //   'Opción 2',
+  //   'Opción 3',
+  //   'Opción 4',
+  //   'Opción 5',
+  // ];
+
+  late Future<List<DatoTecnico>> tecnicos;
+  @override
+  void initState() {
+    super.initState();
+    tecnicos =
+        Provider.of<RecursosProvider>(context, listen: false).getTecnicos();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<DatoTecnico>>(
+      future: tecnicos,
+      builder: (context, AsyncSnapshot<List<DatoTecnico>> snapshot) {
+        if (snapshot.hasData) {
+          return DropdownButtonFormField<DatoTecnico>(
+            hint: const Text('Selecciona un tecnico'),
+            value: widget.selectedValue,
+            // value: (selectedValue != '') ? '' : 'Selecciona una categoría',
+            decoration: InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderSide:
+                    const BorderSide(color: Color(0xffEDF1F2), width: 2),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              border: OutlineInputBorder(
+                borderSide:
+                    const BorderSide(color: Color(0xffEDF1F2), width: 2),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              filled: true,
+              fillColor: const Color(0xffEDF1F2),
+            ),
+            dropdownColor: const Color(0xffEDF1F2),
+            icon: const Icon(Icons.arrow_drop_down),
+            items: snapshot.data!
+                .map<DropdownMenuItem<DatoTecnico>>((DatoTecnico opcion) {
+              return DropdownMenuItem(
+                value: opcion,
+                child: Text(opcion.name),
+              );
+            }).toList(),
+            // items: opciones.map((String opciones) {
+            //   return DropdownMenuItem(
+            //     value: opciones,
+            //     child: Text(opciones),
+            //   );
+            // }).toList(),
+            onChanged: (DatoTecnico? newValue) {
+              widget.selectedValue = newValue!;
+              // print(selectedValue!.id);
+              // print(selectedValue!.nombre);
+              Provider.of<RecursosProvider>(context, listen: false)
+                  .cargarTecnico(widget.selectedValue!);
+              setState(() {});
+            },
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
       },
     );
   }

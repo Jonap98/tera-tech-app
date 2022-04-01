@@ -43,7 +43,7 @@ class AuthProvider extends ChangeNotifier {
       // Guardar otros datos
       (authResponse.data.currentUser.idRol == 3)
           ? NavigationService.replaceTo(Flurorouter.dashboardRoute)
-          : NavigationService.replaceTo(Flurorouter.whiteRoute);
+          : NavigationService.replaceTo(Flurorouter.estadosSoporteRoute);
       // NavigationService.replaceTo(Flurorouter.whiteRoute);
 
       CafeApi.configureDio();
