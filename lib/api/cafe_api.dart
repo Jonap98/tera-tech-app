@@ -8,7 +8,9 @@ class CafeApi {
 
   static void configureDio() {
     // Base del URL
-    _dio.options.baseUrl = 'http://127.0.0.1:8000/api';
+    // _dio.options.baseUrl = 'http://127.0.0.1:8000/api';
+    // Base URL NGROK
+    _dio.options.baseUrl = 'https://f1b2-201-150-7-250.ngrok.io/api';
 
     // Headers
     _dio.options.headers = {
