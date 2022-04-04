@@ -19,24 +19,29 @@ class CustomDateTimePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return DateTimePicker(
       initialTime: const TimeOfDay(hour: 10, minute: 00),
-      initialDate: DateTime.now(),
+      initialDate: (DateTime.now().weekday == 7)
+          ? DateTime(
+              DateTime.now().year, DateTime.now().month, DateTime.now().day + 1)
+          : DateTime.now(),
       calendarTitle: title,
       type: DateTimePickerType.dateTimeSeparate,
       dateMask: 'd MMM, yyyy',
-      initialValue: DateTime.now().toString(),
-      firstDate: DateTime.now(),
+      initialValue: (DateTime.now().weekday == 7)
+          ? DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day + 1)
+              .toString()
+          : DateTime.now().toString(),
+      // firstDate: DateTime.now(),
+      firstDate: (DateTime.now().weekday == 7)
+          ? DateTime(
+              DateTime.now().year, DateTime.now().month, DateTime.now().day + 1)
+          : DateTime.now(),
       lastDate: DateTime(2100),
       icon: const Icon(Icons.event),
       dateLabelText: 'Fecha',
       timeLabelText: 'Hora',
-      selectableDayPredicate: (date) {
-        // Deshabilita fines de semana
-        if (date.weekday == 7) {
-          return false;
-        }
-
-        return true;
-      },
+      // Deshabilita fines de semana
+      selectableDayPredicate: (date) => (date.weekday == 7) ? false : true,
       // onChanged: (val) => print(val),
       onChanged: (val) =>
           Provider.of<SolicitudesProvider>(context, listen: false)

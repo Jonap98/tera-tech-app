@@ -1,12 +1,16 @@
 // ignore_for_file: sized_box_for_whitespace, must_be_immutable, avoid_print
 
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tera_tech_app/models/categorias_model.dart';
 import 'package:tera_tech_app/providers/solicitudes_provider.dart';
+import 'package:tera_tech_app/router/router.dart';
 // import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/services/local_storage.dart';
+import 'package:tera_tech_app/services/navigation_service.dart';
+import 'package:tera_tech_app/services/notification_service.dart';
 // import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/ui/buttons/boton_azul.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
@@ -22,6 +26,12 @@ class SolicitarSoporteView extends StatelessWidget {
   Widget build(BuildContext context) {
     final solicitudProvider = Provider.of<SolicitudesProvider>(context);
     DatoCategoria? selectedValue;
+    // String? image = '';
+    // late PlatformFile image = PlatformFile(name: '', size: 0);
+    // PlatformFile image =
+    //     Provider.of<SolicitudesProvider>(context, listen: false)
+    //         .obtenerInformacionImagen;
+
     return ListView(
       // shrinkWrap: true,
       // crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,14 +59,6 @@ class SolicitarSoporteView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // const Text(
-              //   'Solicitud de soporte',
-              //   style: TextStyle(
-              //     fontSize: 20,
-              //     fontWeight: FontWeight.bold,
-              //   ),
-              // ),
-              // const SizedBox(height: 16),
               const Text('Selecciona la categoría',
                   style: TextStyle(fontSize: 16)),
               const SizedBox(height: 16),
@@ -74,65 +76,46 @@ class SolicitarSoporteView extends StatelessWidget {
               const SizedBox(height: 20),
               const FileUpload(),
               const SizedBox(height: 16),
+              // ElevatedButton(
+              //     onPressed: () => NotificationService.solicitudExitosa(
+              //         context, 'Solicitud creada exitosamente'),
+              //     child: Text('Prueba')),
               CustomElevatedButton(
                   text: 'Solicitar soporte',
                   onPressed: () async {
-                    // (descripcionCtrl.text != '')
-                    //     ? print(descripcionCtrl.text)
-                    //     : print('Sin descripción');
                     final value =
                         Provider.of<SolicitudesProvider>(context, listen: false)
                             .obtenerSelectedValue;
                     final fecha =
                         Provider.of<SolicitudesProvider>(context, listen: false)
                             .obtenerFecha;
+                    final image =
+                        Provider.of<SolicitudesProvider>(context, listen: false)
+                            .obtenerInformacionImagen;
                     // selectedValue mostrar con provider, ya que el valor está
                     // establecido por un widget hijo
                     if (value.nombre.isEmpty) {
                       _categoriasAlert(context);
                     } else {
-                      // print(value.nombre);
-                      // print('id_user: $idUser');
-                      // print('id_categoria: ${value.id}');
-                      // print('id_estado: 1');
-                      // print('id_tecnico: null');
-                      // print('descripcion: ${descripcionCtrl.text}');
-                      // print(
-                      //     'fecha: ${DateTime.now().toString().substring(0, 16)}');
-                      // print('imagen: Aún no jala');
+                      print('Nombre: ${image.name}');
 
                       final solicitudCreada = solicitudProvider.crearSolicitud(
-                          idUser!,
-                          value.id,
-                          descripcionCtrl.text,
-                          (fecha.isNotEmpty)
-                              ? fecha
-                              : DateTime.now().toString().substring(0, 16),
-                          null
-                          // 'fakePath/img.png',
-                          );
+                        context,
+                        idUser!,
+                        value.id,
+                        descripcionCtrl.text,
+                        (fecha.isNotEmpty)
+                            ? fecha
+                            : DateTime.now().toString().substring(0, 16),
+                        image,
+                      );
 
                       if (solicitudCreada) {
-                        showDialog(
-                            context: (context),
-                            builder: (context) {
-                              return const AlertDialog(
-                                content: Text('Solicitud creada con éxito'),
-                              );
-                            });
+                        NotificationService.solicitudExitosa(
+                            context, 'Solicitud creada exitosamente');
+                        NavigationService.navigateTo(Flurorouter.whiteRoute);
                       }
-                      // : showDialog(
-                      //     context: (context),
-                      //     builder: (context) {
-                      //       return AlertDialog(
-                      //         content: Text('Oops!\nHa ocurrido un Error.'),
-                      //       );
-                      //     });
                     }
-
-                    // // Navigator.pushNamed(context, Flurorouter.estadosSoporteRoute),
-                    // NavigationService.navigateTo(
-                    //     Flurorouter.estadosSoporteRoute),
                   }),
             ],
           ),
@@ -172,9 +155,6 @@ class SolicitarSoporteView extends StatelessWidget {
   TextFormField textFormField(TextEditingController controller) {
     return TextFormField(
       controller: controller,
-      // onChanged: (controller) {
-      //   print(controller.trim());
-      // },
       minLines: 1,
       keyboardType: TextInputType.multiline,
       maxLines: 5,
@@ -207,13 +187,41 @@ class FileUpload extends StatefulWidget {
 }
 
 class _FileUploadState extends State<FileUpload> {
+  String value = '';
+
+  // Init state puede usarse para inicializar la imagen vacía
+  late PlatformFile info;
+  @override
+  void initState() {
+    super.initState();
+    info = PlatformFile(name: '', size: 0);
+  }
+
   @override
   Widget build(BuildContext context) {
-    late PlatformFile file = PlatformFile(name: '', size: 0);
+    final size = MediaQuery.of(context).size;
+    final solicitudesProvider = Provider.of<SolicitudesProvider>(context);
 
     return Row(
       children: [
-        const Text('Adjunta una imagen', style: TextStyle(fontSize: 20)),
+        ((info = Provider.of<SolicitudesProvider>(context, listen: false)
+                        .obtenerInformacionImagen)
+                    .name !=
+                '')
+            ? Container(
+                // color: Colors.redAccent,
+                height: 150,
+                width: size.width * 0.2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.memory(
+                    info.bytes!,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              )
+            : const Text('Adjunta una imagen'),
+
         // Puede ser que de error el Spacer, se puede manejar mainAxisAlignment
         const Spacer(),
         ElevatedButton(
@@ -224,19 +232,24 @@ class _FileUploadState extends State<FileUpload> {
               allowMultiple: false,
             );
             if (result != null) {
-              file = result.files.first;
-              // PlatformFile file = result.files.first;
-              // print(file.name);
-              // print(file.bytes);
-              // print(file.size);
-              // print(file.extension);
+              // NotificationService.showBusyIndicator(context);
+              // Carga de imagen
+              // Navigator.of(context).pop();
+
+              PlatformFile file = result.files.first;
+
+              solicitudesProvider.cargarNombreImagen(file.name);
+              solicitudesProvider.cargatInformacionImagen(file);
+
               setState(() {});
-            } else {}
+            } else {
+              print('No hay imagen');
+            }
           },
-          child: const Text('Adjuntar archivo'),
+          child: const Text('Seleccionar archivo'),
         ),
-        const SizedBox(width: 5),
-        (file.name != '') ? Text(file.name) : Container(),
+        // const SizedBox(width: 5),
+        // (file.name != '') ? Text(file.name) : Container(),
       ],
     );
   }

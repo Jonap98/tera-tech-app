@@ -1,8 +1,14 @@
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
+
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:tera_tech_app/api/cafe_api.dart';
 import 'package:tera_tech_app/models/categorias_model.dart';
 import 'package:tera_tech_app/models/solicitudes_model.dart';
 import 'package:tera_tech_app/router/router.dart';
+import 'package:tera_tech_app/services/local_storage.dart';
 import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/services/notification_service.dart';
 
@@ -36,30 +42,32 @@ class SolicitudesProvider extends ChangeNotifier {
   }
 
   bool crearSolicitud(
+    BuildContext context,
     int idUsuario,
     int idCategoria,
     String? descripcion,
-    String fechaCita, // String
-    String? imagen,
+    String fechaCita,
+    PlatformFile imagen,
   ) {
     final data = {
       'id_usuario': idUsuario,
       'id_categoria': idCategoria,
       'id_estado': 1,
-      // 'id_tecnico': idTecnico,
       'descripcion': descripcion,
       'fecha_cita': fechaCita,
-      'imagen': imagen,
+      'imagen': (imagen.name.isNotEmpty)
+          ? MultipartFile.fromBytes(imagen.bytes!,
+              filename: imagen.name,
+              headers: {
+                  'Content-Type': ['multipart/form-data']
+                })
+          : null,
     };
-    // print('Datos:');
-    // print('idUsuario: $idUsuario');
-    // print('idCategoria: $idCategoria');
-    // print('descripcion: $descripcion');
-    // print('fechaCita: $fechaCita');
-    // print('imagen: $imagen');
 
     CafeApi.httpPost('/crear-solicitud', data).then((json) {
-      NavigationService.navigateTo(Flurorouter.whiteRoute);
+      NotificationService.solicitudExitosa(
+          context, 'Solicitud creada exitosamente');
+      // NavigationService.navigateTo(Flurorouter.whiteRoute);
 
       CafeApi.configureDio();
 
@@ -67,9 +75,41 @@ class SolicitudesProvider extends ChangeNotifier {
       return true;
     }).catchError((e) {
       NotificationService.showSnackbarError('Error');
+      // print(e);
       return false;
     });
     return false;
+  }
+
+  // Cargas y getters
+  // PlatformFile? _file;
+  late PlatformFile _file = PlatformFile(name: '', size: 0);
+  cargatInformacionImagen(PlatformFile file) {
+    _file = file;
+    notifyListeners();
+  }
+
+  PlatformFile get obtenerInformacionImagen {
+    return _file;
+  }
+
+  String _image = '';
+  cargarNombreImagen(String image) {
+    _image = image;
+    notifyListeners();
+  }
+
+  Uint8List? _imageBytes;
+  cargarImagen(Uint8List bytes) {
+    _imageBytes = bytes;
+  }
+
+  Uint8List get obtenerImagenBytes {
+    return _imageBytes!;
+  }
+
+  String get obtenerImage {
+    return _image;
   }
 
   late DatoCategoria _selectedValue = DatoCategoria(id: -1, nombre: '');
