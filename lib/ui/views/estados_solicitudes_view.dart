@@ -165,9 +165,9 @@ class EstadoElement extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  (cantidad != 0)
-                      ? NotificationCount(cantidad: cantidad)
-                      : Container()
+                  // (cantidad != 0)
+                  //     ? NotificationCount(cantidad: cantidad)
+                  //     : Container()
                 ],
               ),
             ],

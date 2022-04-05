@@ -41,6 +41,30 @@ class NotificationService {
     showDialog(context: context, builder: (_) => dialog);
   }
 
+  static genericDialog(BuildContext context, mensaje) {
+    final AlertDialog dialog = AlertDialog(
+      content: Container(
+        height: 100,
+        child: Column(
+          children: [
+            Text(
+              mensaje,
+              style: const TextStyle(fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Aceptar'),
+            )
+          ],
+        ),
+      ),
+    );
+    showDialog(
+        context: context, barrierDismissible: false, builder: (_) => dialog);
+  }
+
   static solicitudExitosa(BuildContext context, mensaje) {
     final AlertDialog dialog = AlertDialog(
       content: Container(

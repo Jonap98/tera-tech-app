@@ -1,15 +1,16 @@
 import 'dart:typed_data';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:tera_tech_app/api/cafe_api.dart';
 import 'package:tera_tech_app/models/categorias_model.dart';
+import 'package:tera_tech_app/models/disponibilidad_citas.dart';
 import 'package:tera_tech_app/models/solicitudes_model.dart';
-import 'package:tera_tech_app/router/router.dart';
-import 'package:tera_tech_app/services/local_storage.dart';
-import 'package:tera_tech_app/services/navigation_service.dart';
+// import 'package:tera_tech_app/router/router.dart';
+// import 'package:tera_tech_app/services/local_storage.dart';
+// import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/services/notification_service.dart';
 
 class SolicitudesProvider extends ChangeNotifier {
@@ -81,6 +82,17 @@ class SolicitudesProvider extends ChangeNotifier {
     return false;
   }
 
+  Future<DisponibilidadCitas> verificarDisponibilidad(String fecha) async {
+    final data = {
+      'fecha_cita': fecha,
+    };
+    // final resp = await CafeApi.httpGet('/categorias');
+    final resp = await CafeApi.httpPost('/citas', data);
+    final disponibilidadResp = DisponibilidadCitas.fromMap(resp);
+
+    return disponibilidadResp;
+  }
+
   // Cargas y getters
   // PlatformFile? _file;
   late PlatformFile _file = PlatformFile(name: '', size: 0);
@@ -102,6 +114,11 @@ class SolicitudesProvider extends ChangeNotifier {
   Uint8List? _imageBytes;
   cargarImagen(Uint8List bytes) {
     _imageBytes = bytes;
+  }
+
+  eliminarImagen() {
+    _file = PlatformFile(name: '', size: 0, bytes: null);
+    notifyListeners();
   }
 
   Uint8List get obtenerImagenBytes {
@@ -130,5 +147,15 @@ class SolicitudesProvider extends ChangeNotifier {
 
   String get obtenerFecha {
     return _fecha;
+  }
+
+  bool _disponibilidad = true;
+  cargarDisponibilidad(bool disponibilidad) {
+    _disponibilidad = disponibilidad;
+    notifyListeners();
+  }
+
+  bool get obtenerDisponibilidad {
+    return _disponibilidad;
   }
 }

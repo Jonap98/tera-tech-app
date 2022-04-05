@@ -1,9 +1,10 @@
 // ignore_for_file: sized_box_for_whitespace, must_be_immutable, avoid_print
 
-import 'package:dio/dio.dart';
+// import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+// import 'package:tera_tech_app/api/cafe_api.dart';
 import 'package:tera_tech_app/models/categorias_model.dart';
 import 'package:tera_tech_app/providers/solicitudes_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
@@ -77,9 +78,7 @@ class SolicitarSoporteView extends StatelessWidget {
               const FileUpload(),
               const SizedBox(height: 16),
               // ElevatedButton(
-              //     onPressed: () => NotificationService.solicitudExitosa(
-              //         context, 'Solicitud creada exitosamente'),
-              //     child: Text('Prueba')),
+              //     onPressed: () => CafeApi.obtenerUrl(), child: Text('Prueba')),
               CustomElevatedButton(
                   text: 'Solicitar soporte',
                   onPressed: () async {
@@ -89,15 +88,21 @@ class SolicitarSoporteView extends StatelessWidget {
                     final fecha =
                         Provider.of<SolicitudesProvider>(context, listen: false)
                             .obtenerFecha;
-                    final image =
+                    final disponibilidad =
+                        Provider.of<SolicitudesProvider>(context, listen: false)
+                            .obtenerDisponibilidad;
+                    PlatformFile image =
                         Provider.of<SolicitudesProvider>(context, listen: false)
                             .obtenerInformacionImagen;
                     // selectedValue mostrar con provider, ya que el valor está
                     // establecido por un widget hijo
                     if (value.nombre.isEmpty) {
                       _categoriasAlert(context);
+                    } else if (disponibilidad == false) {
+                      NotificationService.genericDialog(
+                          context, 'Seleccione otra fecha');
                     } else {
-                      print('Nombre: ${image.name}');
+                      // print('Nombre: ${image.name}');
 
                       final solicitudCreada = solicitudProvider.crearSolicitud(
                         context,
@@ -111,6 +116,9 @@ class SolicitarSoporteView extends StatelessWidget {
                       );
 
                       if (solicitudCreada) {
+                        // image = PlatformFile(name: '', size: 0, bytes: null);
+                        imageCache!.clear();
+                        solicitudProvider.eliminarImagen();
                         NotificationService.solicitudExitosa(
                             context, 'Solicitud creada exitosamente');
                         NavigationService.navigateTo(Flurorouter.whiteRoute);
@@ -193,9 +201,17 @@ class _FileUploadState extends State<FileUpload> {
   late PlatformFile info;
   @override
   void initState() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Provider.of<SolicitudesProvider>(context, listen: false).eliminarImagen();
+    });
     super.initState();
-    info = PlatformFile(name: '', size: 0);
   }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   info = PlatformFile(name: '', size: 0);
+  //   Provider.of<SolicitudesProvider>(context, listen: false).eliminarImagen();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +259,7 @@ class _FileUploadState extends State<FileUpload> {
 
               setState(() {});
             } else {
-              print('No hay imagen');
+              // print('No hay imagen');
             }
           },
           child: const Text('Seleccionar archivo'),
