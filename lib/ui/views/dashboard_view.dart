@@ -94,7 +94,8 @@ class _DashboardViewState extends State<DashboardView> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        snapshot.data!.datos[index].nombre,
+                                        snapshot
+                                            .data!.datos[index].nombreCategoria,
                                         // '${solicitudes[index]['nombre']}',
                                         style: TextStyle(
                                           fontSize: 20,

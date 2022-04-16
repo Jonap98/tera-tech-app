@@ -39,6 +39,18 @@ class Sidebar extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 50),
+          (idRol == 1)
+              ? SidebarOption(
+                  icon: Icons.home_repair_service_rounded,
+                  text: 'Registrar empleado',
+                  onTap: () {
+                    SideMenuProvider.closeMenu();
+                    NavigationService.navigateTo(
+                        Flurorouter.registrarEmpleadoRoute);
+                  },
+                )
+              : Container(),
+          const SizedBox(height: 10),
           (idRol == 3)
               ? SidebarOption(
                   icon: Icons.home_repair_service_rounded,

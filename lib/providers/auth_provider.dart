@@ -112,6 +112,53 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
+  registrarEmpleado(BuildContext context, String name, String lastName,
+      String email, String password, int idRol, int idEspecialidad) {
+    // final password =
+
+    final data = {
+      'id_rol': (idRol != -1) ? idRol : null,
+      'id_especialidad': idEspecialidad,
+      'name': name,
+      'last_name': lastName,
+      'email': email,
+      'password': password,
+      'password_confirmation': password,
+    };
+
+    CafeApi.httpPost('/registro', data).then((json) {
+      // print(json);
+      final authResponse = AuthResponse.fromMap(json);
+      user = authResponse.data.currentUser;
+      NotificationService.registroExitoso(
+          context,
+          'Empleado registrado exitosamente\nSe envió la contraseña a su correo',
+          Flurorouter.estadosSoporteRoute);
+
+      // authStatus = AuthStatus.authenticated;
+      // LocalStorage.prefs.setInt('id_usuario', authResponse.data.currentUser.id);
+      // LocalStorage.prefs.setString('token', authResponse.data.accessToken);
+      // LocalStorage.prefs.setString('name', authResponse.data.currentUser.name);
+      // LocalStorage.prefs
+      //     .setString('lastName', authResponse.data.currentUser.lastName);
+      // LocalStorage.prefs.setInt('rol', authResponse.data.currentUser.idRol);
+      // Guardar otros datos
+      // NavigationService.replaceTo(Flurorouter.estadosSoporteRoute);
+      // NavigationService.replaceTo(Flurorouter.whiteRoute);
+
+      CafeApi.configureDio();
+
+      notifyListeners();
+    }).catchError(
+      (e) {
+        NotificationService.showSnackbarError(
+            'Ya existe una cuenta registrada con ese email.');
+        // print('Error en $e');
+        // Posible implementación de notificación de error
+      },
+    );
+  }
+
   Future<bool> isAuthenticated() async {
     final token = LocalStorage.prefs.getString('token');
     if (token == null) {

@@ -3,9 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tera_tech_app/models/clientes_model.dart';
+import 'package:tera_tech_app/models/estados_model.dart';
 import 'package:tera_tech_app/models/tecnicos_model.dart';
 import 'package:tera_tech_app/providers/recursos_provider.dart';
+import 'package:tera_tech_app/providers/solicitudes_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
+import 'package:tera_tech_app/services/local_storage.dart';
 import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
 
@@ -14,6 +17,10 @@ class EstadosSolicitudesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final idRol = LocalStorage.prefs.getInt('rol');
+    // idRol == 1 - Admin
+    // idRol == 2 - Técnico
+
     DatoTecnico? tecnicoSeleccionado;
     DatoCliente? clienteSeleccionado;
 
@@ -35,13 +42,15 @@ class EstadosSolicitudesView extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Container(
-            child: _DropdownTecnicos(selectedValue: tecnicoSeleccionado),
-            width: 210,
-          ),
-          Container(
             child: _DropdownClientes(selectedValue: clienteSeleccionado),
             width: 200,
           ),
+          (idRol == 1)
+              ? Container(
+                  child: _DropdownTecnicos(selectedValue: tecnicoSeleccionado),
+                  width: 210,
+                )
+              : Container(width: 20),
           ElevatedButton(
             onPressed: () {},
             child: const Text('Buscar'),
@@ -49,62 +58,81 @@ class EstadosSolicitudesView extends StatelessWidget {
           Wrap(
             // ignore: prefer_const_literals_to_create_immutables
             children: [
-              EstadoElement(
-                  estado: 'Sin resolver',
-                  icon: Icons.markunread,
-                  cantidad: 30,
-                  onPressed: () {
-                    NavigationService.navigateTo(Flurorouter.whiteRoute);
-                    // NavigationService.navigateTo(
-                    //     Flurorouter.solicitudesEstadosRoute);
-                  }
-                  // onPressed: NavigationService.navigateTo(
-                  //     Flurorouter.solicitudesEstadosRoute),
-                  ),
-              EstadoElement(
-                  estado: 'Abierto',
-                  icon: Icons.drafts,
-                  cantidad: 3,
-                  onPressed: () {
-                    NavigationService.navigateTo(Flurorouter.whiteRoute);
-                    // NavigationService.navigateTo(
-                    //     Flurorouter.solicitudesEstadosRoute);
-                  }),
+              (idRol == 1)
+                  ? EstadoElement(
+                      estado: 'Sin resolver',
+                      icon: Icons.markunread,
+                      cantidad: 30,
+                      onPressed: () {
+                        // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                        Provider.of<RecursosProvider>(context, listen: false)
+                            .cargarEstado(
+                                Estado(id: 1, nombre: 'Sin resolver'));
+                        NavigationService.navigateTo(
+                            Flurorouter.solicitudesEstadosRoute);
+                      }
+                      // onPressed: NavigationService.navigateTo(
+                      //     Flurorouter.solicitudesEstadosRoute),
+                      )
+                  : Container(),
+              (idRol == 1)
+                  ? EstadoElement(
+                      estado: 'Abierto',
+                      icon: Icons.drafts,
+                      cantidad: 3,
+                      onPressed: () {
+                        // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                        Provider.of<RecursosProvider>(context, listen: false)
+                            .cargarEstado(Estado(id: 2, nombre: 'Abierto'));
+                        NavigationService.navigateTo(
+                            Flurorouter.solicitudesEstadosRoute);
+                      })
+                  : Container(),
               EstadoElement(
                   estado: 'Asignado',
                   icon: Icons.assignment_ind,
                   cantidad: 0,
                   onPressed: () {
-                    NavigationService.navigateTo(Flurorouter.whiteRoute);
-                    // NavigationService.navigateTo(
-                    //     Flurorouter.solicitudesEstadosRoute);
+                    // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                    Provider.of<RecursosProvider>(context, listen: false)
+                        .cargarEstado(Estado(id: 3, nombre: 'Asignado'));
+                    // Provider.of<RecursosProvider>(context)
+                    //     .cargarEstado(Estado(id: 3, nombre: 'Asignado'));
+                    NavigationService.navigateTo(
+                        Flurorouter.solicitudesEstadosRoute);
                   }),
               EstadoElement(
                   estado: 'En espera',
                   icon: Icons.watch_later,
                   cantidad: 9,
                   onPressed: () {
-                    NavigationService.navigateTo(Flurorouter.whiteRoute);
-                    // NavigationService.navigateTo(
-                    //     Flurorouter.solicitudesEstadosRoute);
+                    // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                    Provider.of<RecursosProvider>(context, listen: false)
+                        .cargarEstado(Estado(id: 4, nombre: 'En espera'));
+                    NavigationService.navigateTo(
+                        Flurorouter.solicitudesEstadosRoute);
                   }),
               EstadoElement(
                   estado: 'Detalle',
                   icon: Icons.assignment_return,
                   cantidad: 5,
                   onPressed: () {
-                    NavigationService.navigateTo(Flurorouter.whiteRoute);
-                    // NavigationService.navigateTo(
-                    //     Flurorouter.solicitudesEstadosRoute);
+                    // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                    Provider.of<RecursosProvider>(context, listen: false)
+                        .cargarEstado(Estado(id: 5, nombre: 'Detalle'));
+                    NavigationService.navigateTo(
+                        Flurorouter.solicitudesEstadosRoute);
                   }),
               EstadoElement(
                   estado: 'Listo',
                   icon: Icons.assignment_turned_in,
                   cantidad: 10,
                   onPressed: () {
-                    NavigationService.navigateTo(Flurorouter.whiteRoute);
-                    // NavigationService.navigateTo(
-                    //     Flurorouter.solicitudesEstadosRoute);
+                    // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                    Provider.of<RecursosProvider>(context, listen: false)
+                        .cargarEstado(Estado(id: 6, nombre: 'Listo'));
+                    NavigationService.navigateTo(
+                        Flurorouter.solicitudesEstadosRoute);
                   }),
             ],
           ),

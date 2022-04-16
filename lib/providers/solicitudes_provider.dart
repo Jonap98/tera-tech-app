@@ -34,6 +34,30 @@ class SolicitudesProvider extends ChangeNotifier {
     // print(solicitudes);
   }
 
+  Future<SolicitudesResponse> getSolicitudesEstado(
+      int? idSolicitud, int idEstado) async {
+    // CafeApi.configureDio();
+
+    // print(idUsuario);
+    late dynamic resp;
+    if (idSolicitud != null) {
+      resp = await CafeApi.httpGet(
+          '/solicitudes?id=$idSolicitud&idEstado=$idEstado');
+    } else {
+      resp = await CafeApi.httpGet('/solicitudes?idEstado=$idEstado');
+    }
+    print(resp);
+    final solicitudesResp = SolicitudesResponse.fromMap(resp);
+
+    solicitudes = solicitudesResp;
+
+    notifyListeners();
+
+    return solicitudes;
+
+    // print(solicitudes);
+  }
+
   Future<List<DatoCategoria>> getCategorias() async {
     final resp = await CafeApi.httpGet('/categorias');
     final categoriasResp = Categorias.fromMap(resp);
@@ -157,5 +181,34 @@ class SolicitudesProvider extends ChangeNotifier {
 
   bool get obtenerDisponibilidad {
     return _disponibilidad;
+  }
+
+  Dato _solicitud = Dato(
+      id: -1,
+      idUsuario: -1,
+      idCategoria: -1,
+      idEstado: -1,
+      fechaCita: '',
+      nombreCategoria: '',
+      nombreEstado: '');
+  cargarSolicitud(Dato solicitud) {
+    _solicitud = solicitud;
+    notifyListeners();
+  }
+
+  Dato get obtenerSolicitud {
+    return _solicitud;
+  }
+
+  eliminarSolicitud() {
+    _solicitud = Dato(
+        id: -1,
+        idUsuario: -1,
+        idCategoria: -1,
+        idEstado: -1,
+        fechaCita: '',
+        nombreCategoria: '',
+        nombreEstado: '');
+    notifyListeners();
   }
 }

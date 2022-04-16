@@ -14,13 +14,13 @@ class SolicitudesResponse {
   SolicitudesResponse({
     required this.result,
     required this.solicitudesCount,
-    required this.user,
+    this.user,
     required this.datos,
   });
 
   bool result;
   int solicitudesCount;
-  SolicitudesResponseUser user;
+  SolicitudesResponseUser? user;
   List<Dato> datos;
 
   factory SolicitudesResponse.fromMap(Map<String, dynamic> json) =>
@@ -34,45 +34,48 @@ class SolicitudesResponse {
   Map<String, dynamic> toMap() => {
         "result": result,
         "solicitudes_count": solicitudesCount,
-        "user": user.toMap(),
+        "user": user!.toMap(),
         "datos": List<dynamic>.from(datos.map((x) => x.toMap())),
       };
 }
 
 class Dato {
   Dato({
+    required this.id,
     required this.idUsuario,
     required this.idCategoria,
     required this.idEstado,
     this.idTecnico,
-    required this.descripcion,
+    this.descripcion,
     required this.fechaCita,
     this.imagen,
     this.comentario,
     this.fechaListo,
     this.fechaReal,
-    required this.nombre,
-    required this.estado,
-    required this.name,
-    required this.lastName,
+    required this.nombreCategoria,
+    required this.nombreEstado,
+    this.nombreUsuario,
+    this.apellido,
   });
 
+  int id;
   int idUsuario;
   int idCategoria;
   int idEstado;
   int? idTecnico;
-  String descripcion;
+  String? descripcion;
   String fechaCita;
   String? imagen;
   String? comentario;
   DateTime? fechaListo;
   DateTime? fechaReal;
-  String nombre;
-  String estado;
-  String name;
-  String lastName;
+  String nombreCategoria;
+  String nombreEstado;
+  String? nombreUsuario;
+  String? apellido;
 
   factory Dato.fromMap(Map<String, dynamic> json) => Dato(
+        id: json["id"],
         idUsuario: json["id_usuario"],
         idCategoria: json["id_categoria"],
         idEstado: json["id_estado"],
@@ -84,14 +87,15 @@ class Dato {
         comentario: json["comentario"],
         fechaListo: json["fecha_listo"],
         fechaReal: json["fecha_real"],
-        nombre: json["nombre"],
-        estado: json["estado"],
-        name: json["name"],
-        lastName: json["last_name"],
+        nombreCategoria: json["nombre_categoria"],
+        nombreEstado: json["nombre_estado"],
+        nombreUsuario: json["nombre_usuario"],
+        apellido: json["apellido"],
       );
 
   // Formato de fechas generados por Quicktype
   Map<String, dynamic> toMap() => {
+        "id": id,
         "id_usuario": idUsuario,
         "id_categoria": idCategoria,
         "id_estado": idEstado,
@@ -107,21 +111,21 @@ class Dato {
             "${fechaReal!.year.toString().padLeft(4, '0')}-${fechaReal!.month.toString().padLeft(2, '0')}-${fechaReal!.day.toString().padLeft(2, '0')}",
         // "fecha_listo": fechaListo,
         // "fecha_real": fechaReal,
-        "nombre": nombre,
-        "estado": estado,
-        "name": name,
-        "last_name": lastName,
+        "nombre_categoria": nombreCategoria,
+        "nombre_estado": nombreEstado,
+        "nombre_usuario": nombreUsuario,
+        "apellido": apellido,
       };
 }
 
 class SolicitudesResponseUser {
   SolicitudesResponseUser({
-    required this.idUser,
-    required this.user,
+    this.idUser,
+    this.user,
   });
 
-  String idUser;
-  UserUser user;
+  String? idUser;
+  UserUser? user;
 
   factory SolicitudesResponseUser.fromMap(Map<String, dynamic> json) =>
       SolicitudesResponseUser(
@@ -131,18 +135,18 @@ class SolicitudesResponseUser {
 
   Map<String, dynamic> toMap() => {
         "id_user": idUser,
-        "user": user.toMap(),
+        "user": user!.toMap(),
       };
 }
 
 class UserUser {
   UserUser({
-    required this.name,
-    required this.lastName,
+    this.name,
+    this.lastName,
   });
 
-  String name;
-  String lastName;
+  String? name;
+  String? lastName;
 
   factory UserUser.fromMap(Map<String, dynamic> json) => UserUser(
         name: json["name"],

@@ -88,4 +88,27 @@ class NotificationService {
     showDialog(
         context: context, barrierDismissible: false, builder: (_) => dialog);
   }
+
+  static registroExitoso(BuildContext context, mensaje, String route) {
+    final AlertDialog dialog = AlertDialog(
+      content: Container(
+        height: 120,
+        child: Column(
+          children: [
+            Text(
+              mensaje,
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => NavigationService.navigateTo(route),
+              child: const Text('Aceptar'),
+            )
+          ],
+        ),
+      ),
+    );
+    showDialog(
+        context: context, barrierDismissible: false, builder: (_) => dialog);
+  }
 }

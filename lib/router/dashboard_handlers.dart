@@ -7,6 +7,7 @@ import 'package:tera_tech_app/ui/views/dashboard_view.dart';
 import 'package:tera_tech_app/ui/views/estados_solicitudes_view.dart';
 import 'package:tera_tech_app/ui/views/historico_de_tickets_view.dart';
 import 'package:tera_tech_app/ui/views/login_view.dart';
+import 'package:tera_tech_app/ui/views/registrar_empleado_view.dart';
 import 'package:tera_tech_app/ui/views/solicitar_soporte_view.dart';
 import 'package:tera_tech_app/ui/views/soporte_estado_view.dart';
 import 'package:tera_tech_app/ui/views/ticket_view.dart';
@@ -73,6 +74,17 @@ class DashboardHandlers {
       final authProvider = Provider.of<AuthProvider>(context!);
       if (authProvider.authStatus == AuthStatus.authenticated)
         return const HistoricoDeTicketsView();
+      else
+        return const LoginView();
+    },
+  );
+
+  // Registrar empleado
+  static Handler registrarEmpleado = Handler(
+    handlerFunc: (context, params) {
+      final authProvider = Provider.of<AuthProvider>(context!);
+      if (authProvider.authStatus == AuthStatus.authenticated)
+        return const RegistrarEmpleadoView();
       else
         return const LoginView();
     },

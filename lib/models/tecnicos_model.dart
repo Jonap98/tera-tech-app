@@ -36,7 +36,7 @@ class Tecnicos {
 class DatoTecnico {
   DatoTecnico({
     required this.idRol,
-    required this.idEspecialidad,
+    this.idEspecialidad,
     required this.name,
     required this.lastName,
     required this.email,
@@ -44,7 +44,7 @@ class DatoTecnico {
   });
 
   int idRol;
-  int idEspecialidad;
+  int? idEspecialidad;
   String name;
   String lastName;
   String email;

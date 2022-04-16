@@ -25,6 +25,8 @@ class Flurorouter {
   static String ticketDeSolicitudRoute = '/ticket-de-solicitud';
   // Historico de tickets
   static String historicoDeTicketsRoute = '/historico-de-tickets';
+  // Registrar empleado
+  static String registrarEmpleadoRoute = '/registrar-empleado';
   // White
   static String whiteRoute = '/white';
 
@@ -73,6 +75,13 @@ class Flurorouter {
     router.define(
       historicoDeTicketsRoute,
       handler: DashboardHandlers.historicoDeTickets,
+      transitionType: TransitionType.none,
+    );
+
+    // Registrar empleado
+    router.define(
+      registrarEmpleadoRoute,
+      handler: DashboardHandlers.registrarEmpleado,
       transitionType: TransitionType.none,
     );
 

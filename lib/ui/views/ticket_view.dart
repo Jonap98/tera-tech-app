@@ -1,19 +1,59 @@
 // ignore_for_file: sized_box_for_whitespace, prefer_const_constructors, avoid_print, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tera_tech_app/api/cafe_api.dart';
+import 'package:tera_tech_app/models/solicitudes_model.dart';
+import 'package:tera_tech_app/models/tecnicos_model.dart';
+import 'package:tera_tech_app/providers/recursos_provider.dart';
+import 'package:tera_tech_app/providers/solicitudes_provider.dart';
+import 'package:tera_tech_app/services/local_storage.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
 import 'package:tera_tech_app/ui/layouts/auth/widgets/datetime_picker.dart';
+import 'package:tera_tech_app/ui/layouts/auth/widgets/images.dart';
 
 class TicketView extends StatelessWidget {
   const TicketView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final idRol = LocalStorage.prefs.getInt('rol');
+    // idRol == 1 - Admin
+    // idRol == 2 - Técnico
+
+    // late Future<SolicitudesResponse> datos;
+    // datos = Provider.of<SolicitudesProvider>(context, listen: false)
+    //     .getSolicitudes(idUser!);
+    // final datos = Provider.of<SolicitudesProvider>(context, listen: false)
+    //     .obtenerSolicitud;
+    // Se debe realizar la consulta de la solicitud, ya que si solo se utilizan los datos
+    // existentes, al regargar la página se perderán
+    final idSolicitud =
+        Provider.of<RecursosProvider>(context).obtenerIdSolicitud;
+    final idEstado = Provider.of<RecursosProvider>(context).obtenerIdEstado;
+    late Future<SolicitudesResponse> datos;
+    datos = Provider.of<SolicitudesProvider>(context, listen: false)
+        .getSolicitudesEstado(idSolicitud, idEstado);
+    final idTecnico = Provider.of<RecursosProvider>(context).obtenerIdTecnico;
+
+    final tecnico =
+        Provider.of<RecursosProvider>(context).obtenerTecnicoSeleccionado;
+
+    // late DatoTecnico tech;
+    // final tecnico = Provider.of<RecursosProvider>(context)
+    //     .getTecnicoPorId(idTecnico)
+    //     .then((value) {
+    //   Provider.of<RecursosProvider>(context).cargarTecnico(value[0]);
+    // }).then((value) {
+    //   tech = Provider.of<RecursosProvider>(context).obtenerTecnicoSeleccionado;
+    // });
+
     TextEditingController fechaCierreCtrl = TextEditingController();
 
-    const idRol = 1;
-    const tecnico = 'Juan Cerros';
+    // const idRol = 1;
+    // const tecnico = 'Juan Cerros';
     // final size = MediaQuery.of(context).size;
+    final _url = CafeApi.getUrl();
 
     return SingleChildScrollView(
       child: Container(
@@ -30,203 +70,263 @@ class TicketView extends StatelessWidget {
                 style: CustomLabels.h1,
               ),
             ),
+            ElevatedButton(
+              child: Text('Prueba'),
+              onPressed: () {
+                print(_url);
+                // final idSolicitud =
+                //     Provider.of<RecursosProvider>(context).obtenerIdSolicitud;
+                // final idEstado =
+                //     Provider.of<RecursosProvider>(context).obtenerIdEstado;
+                // final tecnico = Provider.of<RecursosProvider>(context)
+                //     .obtenerTecnicoSeleccionado;
+                print(idSolicitud);
+                print(idEstado);
+                print(tecnico.name);
+              },
+            ),
             const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    child: Text(
-                      'Marijose Martinez',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Formateo | 23/04/2022',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Ticket de soporte #566239',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    (tecnico != '')
-                        ? 'Técnico asignado: $tecnico'
-                        : 'Técnico no asignado',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Descripción',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Dolore proident duis incididunt aute cillum eiusmod exercitation eu ea. Voluptate nostrud cupidatat laborum anim voluptate consequat. Ex dolor pariatur laborum laboris do. Exercitation nisi qui id labore mollit proident minim adipisicing. Ipsum consectetur voluptate voluptate voluptate do minim occaecat quis in consectetur eu. Non duis amet cillum irure anim incididunt exercitation voluptate aliqua officia eu cillum. ',
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    height: 300,
-                    width: double.infinity,
-                    // color: Colors.redAccent,
-                    // padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 7,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          // padding: const EdgeInsets.symmetric(vertical: 15),
-                          margin: const EdgeInsets.only(
-                              right: 10, top: 5, bottom: 5),
-                          height: 300,
-                          width: 300,
-                          decoration: BoxDecoration(
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 5),
+            FutureBuilder(
+                future: datos,
+                builder:
+                    (context, AsyncSnapshot<SolicitudesResponse> snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.datos.isNotEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 30, horizontal: 50),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              child: Text(
+                                // 'Marijose Martinez',
+                                '${snapshot.data!.datos[0].nombreUsuario} ${snapshot.data!.datos[0].apellido}',
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w800,
                                 ),
-                              ],
-                              // color: Colors.blue,
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage('assets/engineer.png'),
-                              )),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  (idRol != 1)
-                      ? Center(
-                          child: Wrap(
-                            // ignore: prefer_const_literals_to_create_immutables
-                            children: [
-                              (tecnico != '')
-                                  ? _CustomButton(
-                                      text: 'Asignar técnico',
-                                      color: Color(0xff28A745),
-                                      onPressed: () {
-                                        _asignarTecnicoDialog(context);
-                                      },
-                                    )
-                                  : Container(),
-                              const SizedBox(width: 10),
-                              _CustomButton(
-                                text: 'Cerrar solicitud',
-                                color: Colors.redAccent,
-                                onPressed: () {
-                                  _cerrarColicitudDialog(context);
-                                },
                               ),
-                              // ElevatedButton(
-                              //     onPressed: () {},
-                              //     child: Text('Cerrar solicitud')),
-                              // CustomElevatedButton(text: 'Asignar técnico'),
-                              // CustomElevatedButton(text: 'Cerrar solicitud'),
-                            ],
-                          ),
-                        )
-                      : Center(
-                          child: _CustomButton(
-                            text: 'Atender solicitud',
-                            color: Colors.blue,
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (builder) {
-                                  return AlertDialog(
-                                    content: Container(
-                                      height: 450,
-                                      width: 350,
-                                      child: Column(
-                                        children: [
-                                          const Text(
-                                            'Atender solicitud',
-                                            style: TextStyle(fontSize: 25),
-                                          ),
-                                          const SizedBox(height: 15),
-                                          _CheckBoxDetalle(valor: false),
-                                          // Container(
-                                          //   width: double.infinity,
-                                          //   child: Text('Detalle'),
-                                          // ),
-                                          const SizedBox(height: 15),
-                                          Container(
-                                            width: double.infinity,
-                                            child: Text(
-                                                'Fecha de cierre programado:'),
-                                          ),
-                                          const SizedBox(height: 15),
-                                          CustomDateTimePicker(
-                                              controller: fechaCierreCtrl),
-                                          // selectDateTime(fechaCierreCtrl),
-                                          const SizedBox(height: 15),
-                                          _textFormField(),
-                                          const SizedBox(height: 25),
-                                          _CustomButton(
-                                            text: 'Aceptar',
-                                            color: Colors.blue,
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                              showDialog(
-                                                context: context,
-                                                builder: (builder) {
-                                                  return AlertDialog(
-                                                    content: Text(
-                                                        'Atención de solicitud registrada exitosamente.'),
-                                                  );
-                                                },
-                                              );
-                                            },
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              // 'Formateo | 23/04/2022',
+                              '${snapshot.data!.datos[0].nombreCategoria} | ${snapshot.data!.datos[0].fechaCita}',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Ticket de soporte #${snapshot.data!.datos[0].id}',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              (snapshot.data!.datos[0].idTecnico != null)
+                                  ? 'Técnico asignado: ${tecnico.name} ${tecnico.lastName}'
+                                  : 'Técnico no asignado',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Descripción',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              '${snapshot.data!.datos[0].descripcion}',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            (snapshot.data!.datos[0].imagen != null)
+                                ? Center(
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                          right: 10, top: 5, bottom: 5),
+                                      height: 300,
+                                      width: 500,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        // La implementación de esta widget se realizó ya que no era posible
+                                        // insertar un NetworkImage con esa url, la alternativa era ejecutar la app y compilarla
+                                        // con --web-render html, lo que se vuelve muy tedioso en pruebas, además de alterar algunos estilos
+                                        // en los textos y otras propiedades
+                                        child: MyImage(
+                                            url:
+                                                '$_url/img/${snapshot.data!.datos[0].imagen!}'),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 10,
+                                            offset: Offset(0, 5),
                                           ),
                                         ],
+                                        // color: Colors.blue,
+                                        borderRadius: BorderRadius.circular(10),
+                                        // image: DecorationImage(
+                                        //   fit: BoxFit.cover,
+                                        //   image: NetworkImage(
+                                        //       '$_url/img/${snapshot.data!.datos[0].imagen!}'),
+                                        // ),
                                       ),
                                     ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
+                                  )
+                                : Container(),
+                            const SizedBox(height: 10),
+                            Center(
+                              child: (idRol == 1)
+                                  ? (snapshot.data!.datos[0].idEstado == 1 ||
+                                          snapshot.data!.datos[0].idEstado == 2)
+                                      ? Wrap(
+                                          children: [
+                                            _CustomButton(
+                                              text: 'Asignar técnico',
+                                              color: Color(0xff28A745),
+                                              onPressed: () {
+                                                _asignarTecnicoDialog(context);
+                                              },
+                                            ),
+                                            SizedBox(width: 10),
+                                            _CustomButton(
+                                              text: 'Cerrar solicitud',
+                                              color: Colors.redAccent,
+                                              onPressed: () {
+                                                _cerrarColicitudDialog(context);
+                                              },
+                                            ),
+                                          ],
+                                        )
+                                      : (snapshot.data!.datos[0].idEstado ==
+                                                  3 ||
+                                              snapshot.data!.datos[0]
+                                                      .idEstado ==
+                                                  4)
+                                          ? _CustomButton(
+                                              text: 'Cerrar solicitud',
+                                              color: Colors.redAccent,
+                                              onPressed: () {
+                                                _cerrarColicitudDialog(context);
+                                              },
+                                            )
+                                          : Container()
+                                  : (idRol == 2)
+                                      ? (snapshot.data!.datos[0].idEstado == 3)
+                                          ? _CustomButton(
+                                              text: 'Atender solicitud',
+                                              color: Colors.blue,
+                                              onPressed: () {
+                                                _atenderColicitudDialog(
+                                                    context, fechaCierreCtrl);
+                                              },
+                                            )
+                                          : (snapshot.data!.datos[0].idEstado ==
+                                                      4 ||
+                                                  snapshot.data!.datos[0]
+                                                          .idEstado ==
+                                                      5)
+                                              ? _CustomButton(
+                                                  text: 'Cerrar solicitud',
+                                                  color: Colors.redAccent,
+                                                  onPressed: () {
+                                                    _cerrarColicitudDialog(
+                                                        context);
+                                                  },
+                                                )
+                                              : Container()
+                                      : Container(),
+                            ),
+                          ],
                         ),
-                  // : CustomElevatedButton(text: 'Atender Solicitud'),
-                ],
-              ),
-            ),
+                      );
+                    } else {
+                      return const Center(
+                        child: Text('No hay datos por mostrar'),
+                      );
+                    }
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                }),
             const SizedBox(height: 10),
           ],
         ),
       ),
+    );
+  }
+
+  Future<dynamic> _atenderColicitudDialog(
+      BuildContext context, TextEditingController fechaCierreCtrl) {
+    return showDialog(
+      context: context,
+      builder: (builder) {
+        return AlertDialog(
+          content: Container(
+            height: 450,
+            width: 350,
+            child: Column(
+              children: [
+                const Text(
+                  'Atender solicitud',
+                  style: TextStyle(fontSize: 25),
+                ),
+                const SizedBox(height: 15),
+                _CheckBoxDetalle(valor: false),
+                // Container(
+                //   width: double.infinity,
+                //   child: Text('Detalle'),
+                // ),
+                const SizedBox(height: 15),
+                Container(
+                  width: double.infinity,
+                  child: Text('Fecha de cierre programado:'),
+                ),
+                const SizedBox(height: 15),
+                CustomDateTimePicker(controller: fechaCierreCtrl),
+                // selectDateTime(fechaCierreCtrl),
+                const SizedBox(height: 15),
+                _textFormField(),
+                const SizedBox(height: 25),
+                _CustomButton(
+                  text: 'Aceptar',
+                  color: Colors.blue,
+                  onPressed: () {
+                    Navigator.pop(context);
+                    showDialog(
+                      context: context,
+                      builder: (builder) {
+                        return AlertDialog(
+                          content: Text(
+                              'Atención de solicitud registrada exitosamente.'),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 // DateTimePicker selectDateTime(TextEditingController controller) {
