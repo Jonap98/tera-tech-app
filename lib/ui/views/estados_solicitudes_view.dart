@@ -11,6 +11,7 @@ import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/services/local_storage.dart';
 import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
+import 'package:tera_tech_app/ui/shared/widgets/dropdown_tecnicos.dart';
 
 class EstadosSolicitudesView extends StatelessWidget {
   const EstadosSolicitudesView({Key? key}) : super(key: key);
@@ -47,7 +48,7 @@ class EstadosSolicitudesView extends StatelessWidget {
           ),
           (idRol == 1)
               ? Container(
-                  child: _DropdownTecnicos(selectedValue: tecnicoSeleccionado),
+                  child: DropdownTecnicos(selectedValue: tecnicoSeleccionado),
                   width: 210,
                 )
               : Container(width: 20),
@@ -249,15 +250,6 @@ class _DropdownClientes extends StatefulWidget {
 }
 
 class _DropdownClientesState extends State<_DropdownClientes> {
-  // String? selectedValue;
-  // final opciones = [
-  //   'Opción 1',
-  //   'Opción 2',
-  //   'Opción 3',
-  //   'Opción 4',
-  //   'Opción 5',
-  // ];
-
   late Future<List<DatoCliente>> clientes;
   @override
   void initState() {
@@ -311,92 +303,6 @@ class _DropdownClientesState extends State<_DropdownClientes> {
               // print(selectedValue!.nombre);
               Provider.of<RecursosProvider>(context, listen: false)
                   .cargarCliente(widget.selectedValue!);
-              setState(() {});
-            },
-          );
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-}
-
-class _DropdownTecnicos extends StatefulWidget {
-  DatoTecnico? selectedValue;
-
-  _DropdownTecnicos({
-    Key? key,
-    this.selectedValue,
-  }) : super(key: key);
-
-  @override
-  State<_DropdownTecnicos> createState() => _DropdownTecnicosState();
-}
-
-class _DropdownTecnicosState extends State<_DropdownTecnicos> {
-  // String? selectedValue;
-  // final opciones = [
-  //   'Opción 1',
-  //   'Opción 2',
-  //   'Opción 3',
-  //   'Opción 4',
-  //   'Opción 5',
-  // ];
-
-  late Future<List<DatoTecnico>> tecnicos;
-  @override
-  void initState() {
-    super.initState();
-    tecnicos =
-        Provider.of<RecursosProvider>(context, listen: false).getTecnicos();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<List<DatoTecnico>>(
-      future: tecnicos,
-      builder: (context, AsyncSnapshot<List<DatoTecnico>> snapshot) {
-        if (snapshot.hasData) {
-          return DropdownButtonFormField<DatoTecnico>(
-            hint: const Text('Selecciona un tecnico'),
-            value: widget.selectedValue,
-            // value: (selectedValue != '') ? '' : 'Selecciona una categoría',
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderSide:
-                    const BorderSide(color: Color(0xffEDF1F2), width: 2),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              border: OutlineInputBorder(
-                borderSide:
-                    const BorderSide(color: Color(0xffEDF1F2), width: 2),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              filled: true,
-              fillColor: const Color(0xffEDF1F2),
-            ),
-            dropdownColor: const Color(0xffEDF1F2),
-            icon: const Icon(Icons.arrow_drop_down),
-            items: snapshot.data!
-                .map<DropdownMenuItem<DatoTecnico>>((DatoTecnico opcion) {
-              return DropdownMenuItem(
-                value: opcion,
-                child: Text(opcion.name),
-              );
-            }).toList(),
-            // items: opciones.map((String opciones) {
-            //   return DropdownMenuItem(
-            //     value: opciones,
-            //     child: Text(opciones),
-            //   );
-            // }).toList(),
-            onChanged: (DatoTecnico? newValue) {
-              widget.selectedValue = newValue!;
-              // print(selectedValue!.id);
-              // print(selectedValue!.nombre);
-              Provider.of<RecursosProvider>(context, listen: false)
-                  .cargarTecnico(widget.selectedValue!);
               setState(() {});
             },
           );

@@ -35,6 +35,7 @@ class Tecnicos {
 
 class DatoTecnico {
   DatoTecnico({
+    required this.id,
     required this.idRol,
     this.idEspecialidad,
     required this.name,
@@ -43,6 +44,7 @@ class DatoTecnico {
     required this.especialidad,
   });
 
+  int id;
   int idRol;
   int? idEspecialidad;
   String name;
@@ -51,6 +53,7 @@ class DatoTecnico {
   String especialidad;
 
   factory DatoTecnico.fromMap(Map<String, dynamic> json) => DatoTecnico(
+        id: json["id"],
         idRol: json["id_rol"],
         idEspecialidad: json["id_especialidad"],
         name: json["name"],
@@ -60,6 +63,7 @@ class DatoTecnico {
       );
 
   Map<String, dynamic> toMap() => {
+        "id": id,
         "id_rol": idRol,
         "id_especialidad": idEspecialidad,
         "name": name,

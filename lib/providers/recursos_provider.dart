@@ -33,6 +33,7 @@ class RecursosProvider extends ChangeNotifier {
   }
 
   late DatoTecnico _tecnicoSeleccionado = DatoTecnico(
+      id: -1,
       idRol: -1,
       idEspecialidad: -1,
       name: '',

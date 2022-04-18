@@ -15,6 +15,7 @@ import 'package:tera_tech_app/services/notification_service.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
 import 'package:tera_tech_app/ui/layouts/auth/widgets/datetime_picker.dart';
 import 'package:tera_tech_app/ui/layouts/auth/widgets/images.dart';
+import 'package:tera_tech_app/ui/shared/widgets/dropdown_tecnicos.dart';
 
 class TicketView extends StatefulWidget {
   const TicketView({Key? key}) : super(key: key);
@@ -231,7 +232,8 @@ class _TicketViewState extends State<TicketView> {
                                               text: 'Asignar técnico',
                                               color: Color(0xff28A745),
                                               onPressed: () {
-                                                _asignarTecnicoDialog(context);
+                                                _asignarTecnicoDialog(context,
+                                                    snapshot.data!.datos[0].id);
                                               },
                                             ),
                                             SizedBox(width: 10),
@@ -403,8 +405,8 @@ class _TicketViewState extends State<TicketView> {
                       print('fechaCierre: ${fecha.substring(0, 16)}');
                     }
 
-                    final solicitudAtendida =
-                        solicitudesProvider.atenderSolicitud(
+                    // final solicitudAtendida =
+                    solicitudesProvider.atenderSolicitud(
                       context,
                       idSolicitud,
                       detalle,
@@ -528,7 +530,7 @@ class _TicketViewState extends State<TicketView> {
     );
   }
 
-  Future<dynamic> _asignarTecnicoDialog(BuildContext context) {
+  Future<dynamic> _asignarTecnicoDialog(BuildContext context, int idSolicitud) {
     return showDialog(
       context: context,
       builder: (builder) {
@@ -543,23 +545,27 @@ class _TicketViewState extends State<TicketView> {
                   style: TextStyle(fontSize: 25),
                 ),
                 const SizedBox(height: 15),
-                _CustomDropDown(
-                  titulo: 'Seleccionar técnico',
-                ),
+                DropdownTecnicos(),
                 const SizedBox(height: 25),
                 _CustomButton(
                   text: 'Aceptar',
                   color: Colors.blue,
                   onPressed: () {
-                    Navigator.pop(context);
-                    showDialog(
-                      context: context,
-                      builder: (builder) {
-                        return AlertDialog(
-                          content: Text('Técnico asignado exitosamente.'),
-                        );
-                      },
-                    );
+                    final tecnico =
+                        Provider.of<RecursosProvider>(context, listen: false)
+                            .obtenerTecnicoSeleccionado;
+
+                    solicitudesProvider.asignarTecnico(
+                        context, idSolicitud, tecnico.id);
+                    // Navigator.pop(context);
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (builder) {
+                    //     return AlertDialog(
+                    //       content: Text('Técnico asignado exitosamente.'),
+                    //     );
+                    //   },
+                    // );
                   },
                 ),
               ],
@@ -646,63 +652,6 @@ class _CustomButton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _CustomDropDown extends StatefulWidget {
-  final String titulo;
-
-  const _CustomDropDown({
-    Key? key,
-    this.titulo = 'Seleccionar',
-  }) : super(key: key);
-
-  @override
-  State<_CustomDropDown> createState() => _CustomDropDownState();
-}
-
-class _CustomDropDownState extends State<_CustomDropDown> {
-  String? selectedValue;
-  final opciones = [
-    'Opción 1',
-    'Opción 2',
-    'Opción 3',
-    'Opción 4',
-    'Opción 5',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField(
-      hint: Text(widget.titulo),
-      validator: (value) => value == null ? widget.titulo : null,
-      value: selectedValue,
-      // value: (dropdownValue != '') ? '' : 'Selecciona una categoría',
-      decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xffEDF1F2), width: 2),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xffEDF1F2), width: 2),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        filled: true,
-        fillColor: const Color(0xffEDF1F2),
-      ),
-      dropdownColor: const Color(0xffEDF1F2),
-      icon: const Icon(Icons.arrow_drop_down),
-      items: opciones.map((String opciones) {
-        return DropdownMenuItem(
-          value: opciones,
-          child: Text(opciones),
-        );
-      }).toList(),
-      onChanged: (String? newValue) {
-        selectedValue = newValue!;
-        setState(() {});
-      },
     );
   }
 }

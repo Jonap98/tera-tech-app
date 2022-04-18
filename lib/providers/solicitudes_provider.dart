@@ -133,6 +133,31 @@ class SolicitudesProvider extends ChangeNotifier {
     return false;
   }
 
+  bool asignarTecnico(
+    BuildContext context,
+    int idSolicitud,
+    int idTecnico,
+  ) {
+    final data = {
+      'id_tecnico': idTecnico,
+    };
+
+    CafeApi.httpPost('/asignar-tecnico/$idSolicitud', data).then((json) {
+      NotificationService.solicitudExitosa(context,
+          'Técnico asignado exitosamente', Flurorouter.estadosSoporteRoute);
+
+      CafeApi.configureDio();
+
+      notifyListeners();
+      return true;
+    }).catchError((e) {
+      NotificationService.showSnackbarError('Error');
+      // print(e);
+      return false;
+    });
+    return false;
+  }
+
   bool atenderSolicitud(
     BuildContext context,
     int idSolicitud,
