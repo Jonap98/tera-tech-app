@@ -67,8 +67,8 @@ class Dato {
   String fechaCita;
   String? imagen;
   String? comentario;
-  DateTime? fechaListo;
-  DateTime? fechaReal;
+  String? fechaListo;
+  String? fechaReal;
   String nombreCategoria;
   String nombreEstado;
   String? nombreUsuario;
@@ -105,10 +105,10 @@ class Dato {
         // "${fechaCita.year.toString().padLeft(4, '0')}-${fechaCita.month.toString().padLeft(2, '0')}-${fechaCita.day.toString().padLeft(2, '0')}",
         "imagen": imagen,
         "comentario": comentario,
-        "fecha_listo":
-            "${fechaListo!.year.toString().padLeft(4, '0')}-${fechaListo!.month.toString().padLeft(2, '0')}-${fechaListo!.day.toString().padLeft(2, '0')}",
-        "fecha_real":
-            "${fechaReal!.year.toString().padLeft(4, '0')}-${fechaReal!.month.toString().padLeft(2, '0')}-${fechaReal!.day.toString().padLeft(2, '0')}",
+        "fecha_listo": fechaListo,
+        // "${fechaListo!.year.toString().padLeft(4, '0')}-${fechaListo!.month.toString().padLeft(2, '0')}-${fechaListo!.day.toString().padLeft(2, '0')}",
+        "fecha_real": fechaReal,
+        // "${fechaReal!.year.toString().padLeft(4, '0')}-${fechaReal!.month.toString().padLeft(2, '0')}-${fechaReal!.day.toString().padLeft(2, '0')}",
         // "fecha_listo": fechaListo,
         // "fecha_real": fechaReal,
         "nombre_categoria": nombreCategoria,

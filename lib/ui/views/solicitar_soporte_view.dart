@@ -120,8 +120,11 @@ class SolicitarSoporteView extends StatelessWidget {
                         imageCache!.clear();
                         solicitudProvider.eliminarImagen();
                         NotificationService.solicitudExitosa(
-                            context, 'Solicitud creada exitosamente');
-                        NavigationService.navigateTo(Flurorouter.whiteRoute);
+                            context,
+                            'Solicitud creada exitosamente',
+                            Flurorouter.dashboardRoute);
+                        NavigationService.navigateTo(
+                            Flurorouter.dashboardRoute);
                       }
                     }
                   }),

@@ -1,5 +1,6 @@
 // ignore_for_file: sized_box_for_whitespace, prefer_const_constructors, avoid_print, must_be_immutable
 
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tera_tech_app/api/cafe_api.dart';
@@ -7,13 +8,47 @@ import 'package:tera_tech_app/models/solicitudes_model.dart';
 import 'package:tera_tech_app/models/tecnicos_model.dart';
 import 'package:tera_tech_app/providers/recursos_provider.dart';
 import 'package:tera_tech_app/providers/solicitudes_provider.dart';
+import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/services/local_storage.dart';
+import 'package:tera_tech_app/services/navigation_service.dart';
+import 'package:tera_tech_app/services/notification_service.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
 import 'package:tera_tech_app/ui/layouts/auth/widgets/datetime_picker.dart';
 import 'package:tera_tech_app/ui/layouts/auth/widgets/images.dart';
 
-class TicketView extends StatelessWidget {
+class TicketView extends StatefulWidget {
   const TicketView({Key? key}) : super(key: key);
+
+  @override
+  State<TicketView> createState() => _TicketViewState();
+}
+
+class _TicketViewState extends State<TicketView> {
+  late int idSolicitud;
+  late int idEstado;
+  late int idTecnico;
+  late Future<SolicitudesResponse> datos;
+  late DatoTecnico tecnico;
+  late SolicitudesProvider solicitudesProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    idSolicitud = Provider.of<RecursosProvider>(context, listen: false)
+        .obtenerIdSolicitud;
+    idEstado =
+        Provider.of<RecursosProvider>(context, listen: false).obtenerIdEstado;
+    datos = Provider.of<SolicitudesProvider>(context, listen: false)
+        .getSolicitudesEstado(idSolicitud, idEstado);
+    idTecnico =
+        Provider.of<RecursosProvider>(context, listen: false).obtenerIdTecnico;
+
+    tecnico = Provider.of<RecursosProvider>(context, listen: false)
+        .obtenerTecnicoSeleccionado;
+
+    solicitudesProvider =
+        Provider.of<SolicitudesProvider>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +63,11 @@ class TicketView extends StatelessWidget {
     //     .obtenerSolicitud;
     // Se debe realizar la consulta de la solicitud, ya que si solo se utilizan los datos
     // existentes, al regargar la página se perderán
-    final idSolicitud =
-        Provider.of<RecursosProvider>(context).obtenerIdSolicitud;
-    final idEstado = Provider.of<RecursosProvider>(context).obtenerIdEstado;
-    late Future<SolicitudesResponse> datos;
-    datos = Provider.of<SolicitudesProvider>(context, listen: false)
-        .getSolicitudesEstado(idSolicitud, idEstado);
-    final idTecnico = Provider.of<RecursosProvider>(context).obtenerIdTecnico;
 
-    final tecnico =
-        Provider.of<RecursosProvider>(context).obtenerTecnicoSeleccionado;
+    // Este se utilizará para realizar las acciones de cerrar y actualizar
+    // ya se me había hecho mucho rollo con las anteriores, ya no tuve tiempo
+    // De refatorizar eso
+    // final solicitudesProvider = Provider.of<SolicitudesProvider>(context);
 
     // late DatoTecnico tech;
     // final tecnico = Provider.of<RecursosProvider>(context)
@@ -47,8 +77,6 @@ class TicketView extends StatelessWidget {
     // }).then((value) {
     //   tech = Provider.of<RecursosProvider>(context).obtenerTecnicoSeleccionado;
     // });
-
-    TextEditingController fechaCierreCtrl = TextEditingController();
 
     // const idRol = 1;
     // const tecnico = 'Juan Cerros';
@@ -70,22 +98,22 @@ class TicketView extends StatelessWidget {
                 style: CustomLabels.h1,
               ),
             ),
-            ElevatedButton(
-              child: Text('Prueba'),
-              onPressed: () {
-                print(_url);
-                // final idSolicitud =
-                //     Provider.of<RecursosProvider>(context).obtenerIdSolicitud;
-                // final idEstado =
-                //     Provider.of<RecursosProvider>(context).obtenerIdEstado;
-                // final tecnico = Provider.of<RecursosProvider>(context)
-                //     .obtenerTecnicoSeleccionado;
-                print(idSolicitud);
-                print(idEstado);
-                print(tecnico.name);
-              },
-            ),
-            const SizedBox(height: 10),
+            // ElevatedButton(
+            //   child: Text('Prueba'),
+            //   onPressed: () {
+            //     print(_url);
+            //     // final idSolicitud =
+            //     //     Provider.of<RecursosProvider>(context).obtenerIdSolicitud;
+            //     // final idEstado =
+            //     //     Provider.of<RecursosProvider>(context).obtenerIdEstado;
+            //     // final tecnico = Provider.of<RecursosProvider>(context)
+            //     //     .obtenerTecnicoSeleccionado;
+            //     print(idSolicitud);
+            //     print(idEstado);
+            //     print(tecnico.name);
+            //   },
+            // ),
+            // const SizedBox(height: 10),
             FutureBuilder(
                 future: datos,
                 builder:
@@ -211,7 +239,11 @@ class TicketView extends StatelessWidget {
                                               text: 'Cerrar solicitud',
                                               color: Colors.redAccent,
                                               onPressed: () {
-                                                _cerrarColicitudDialog(context);
+                                                _cerrarColicitudDialog(
+                                                  context,
+                                                  snapshot.data!.datos[0].id,
+                                                  solicitudesProvider,
+                                                );
                                               },
                                             ),
                                           ],
@@ -225,7 +257,11 @@ class TicketView extends StatelessWidget {
                                               text: 'Cerrar solicitud',
                                               color: Colors.redAccent,
                                               onPressed: () {
-                                                _cerrarColicitudDialog(context);
+                                                _cerrarColicitudDialog(
+                                                  context,
+                                                  snapshot.data!.datos[0].id,
+                                                  solicitudesProvider,
+                                                );
                                               },
                                             )
                                           : Container()
@@ -235,8 +271,8 @@ class TicketView extends StatelessWidget {
                                               text: 'Atender solicitud',
                                               color: Colors.blue,
                                               onPressed: () {
-                                                _atenderColicitudDialog(
-                                                    context, fechaCierreCtrl);
+                                                _atenderSolicitudDialog(context,
+                                                    snapshot.data!.datos[0].id);
                                               },
                                             )
                                           : (snapshot.data!.datos[0].idEstado ==
@@ -249,7 +285,11 @@ class TicketView extends StatelessWidget {
                                                   color: Colors.redAccent,
                                                   onPressed: () {
                                                     _cerrarColicitudDialog(
-                                                        context);
+                                                      context,
+                                                      snapshot
+                                                          .data!.datos[0].id,
+                                                      solicitudesProvider,
+                                                    );
                                                   },
                                                 )
                                               : Container()
@@ -274,14 +314,16 @@ class TicketView extends StatelessWidget {
     );
   }
 
-  Future<dynamic> _atenderColicitudDialog(
-      BuildContext context, TextEditingController fechaCierreCtrl) {
+  Future<dynamic> _atenderSolicitudDialog(
+      BuildContext context, int idSolicitud) {
+    TextEditingController comentarioCtrl = TextEditingController();
+
     return showDialog(
       context: context,
       builder: (builder) {
         return AlertDialog(
           content: Container(
-            height: 450,
+            height: 475,
             width: 350,
             child: Column(
               children: [
@@ -301,25 +343,102 @@ class TicketView extends StatelessWidget {
                   child: Text('Fecha de cierre programado:'),
                 ),
                 const SizedBox(height: 15),
-                CustomDateTimePicker(controller: fechaCierreCtrl),
+                _CustomDateTimePicker(),
                 // selectDateTime(fechaCierreCtrl),
                 const SizedBox(height: 15),
-                _textFormField(),
+                Container(
+                  width: double.infinity,
+                  child: Text('Comentario:'),
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: comentarioCtrl,
+                  minLines: 1,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 5,
+                  maxLength: 500,
+                  // onChanged: (value) {
+                  //   print(value);
+                  // },
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(color: Color(0xffEDF1F2), width: 2),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(color: Color(0xffEDF1F2), width: 2),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    filled: true,
+                    fillColor: const Color(0xffEDF1F2),
+                  ),
+                ),
+                // _textFormField(),
                 const SizedBox(height: 25),
                 _CustomButton(
                   text: 'Aceptar',
                   color: Colors.blue,
                   onPressed: () {
-                    Navigator.pop(context);
-                    showDialog(
-                      context: context,
-                      builder: (builder) {
-                        return AlertDialog(
-                          content: Text(
-                              'Atención de solicitud registrada exitosamente.'),
-                        );
-                      },
+                    final detalle =
+                        Provider.of<SolicitudesProvider>(context, listen: false)
+                            .obtenerDetalle;
+                    final fecha =
+                        Provider.of<SolicitudesProvider>(context, listen: false)
+                            .obtenerFecha;
+                    // Navigator.pop(context);
+                    print('detalle: $detalle');
+                    print('comentarioCtrl: ${comentarioCtrl.text}');
+                    print('fechaCierre: $fecha');
+
+                    // Future.delayed(Duration(milliseconds: 5000), () {
+                    print('context: $context');
+                    print('idSolicitud: $idSolicitud');
+                    print('detalle: $detalle');
+                    print('comentarioCtrl: ${comentarioCtrl.text}');
+                    if (fecha.isEmpty) {
+                      print(DateTime.now().toString().substring(0, 16));
+                    } else {
+                      print('fechaCierre: ${fecha.substring(0, 16)}');
+                    }
+
+                    final solicitudAtendida =
+                        solicitudesProvider.atenderSolicitud(
+                      context,
+                      idSolicitud,
+                      detalle,
+                      comentarioCtrl.text,
+                      (fecha.isNotEmpty)
+                          ? fecha.substring(0, 16)
+                          : DateTime.now().toString().substring(0, 16),
                     );
+                    // if (solicitudAtendida) {
+                    //   final det = Provider.of<SolicitudesProvider>(context,
+                    //           listen: false)
+                    //       .inicializarDetalle();
+                    //   print('Detalle final: $det');
+                    //   NotificationService.solicitudExitosa(
+                    //       context,
+                    //       'Solicitud atendida exitosamente',
+                    //       Flurorouter.estadosSoporteRoute);
+                    //   // NavigationService.navigateTo(
+                    //   //     Flurorouter.estadosSoporteRoute);
+                    // }
+
+                    // });
+
+                    // Fecha con ctrl no sirve
+                    // print('fechaCierreCtrl: ${fechaCierreCtrl.text}');
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (builder) {
+                    //     return AlertDialog(
+                    //       content: Text(
+                    //           'Atención de solicitud registrada exitosamente.'),
+                    //     );
+                    //   },
+                    // );
                   },
                 ),
               ],
@@ -329,44 +448,17 @@ class TicketView extends StatelessWidget {
       },
     );
   }
-// DateTimePicker selectDateTime(TextEditingController controller) {
-  //   return DateTimePicker(
-  //     type: DateTimePickerType.dateTimeSeparate,
-  //     dateMask: 'd MMM, yyyy',
-  //     initialValue: DateTime.now().toString(),
-  //     firstDate: DateTime(2000),
-  //     lastDate: DateTime(2100),
-  //     icon: Icon(Icons.event),
-  //     dateLabelText: 'Fecha',
-  //     timeLabelText: 'Hora',
-  //     selectableDayPredicate: (date) {
-  //       // Deshabilita fines de semana
-  //       // if (date.weekday == 6 ||
-  //       //     date.weekday == 7) {
-  //       //   return false;
-  //       // }
-
-  //       return true;
-  //     },
-  //     // onChanged: (val) => print(val),
-  //     validator: (val) {
-  //       // print(val);
-  //       return null;
-  //     },
-  //     onSaved: (val) {
-  //       controller.text = val!;
-  //       // print(val);
-  //     },
-  //   );
-  // }
-  //
 
   TextFormField _textFormField() {
     return TextFormField(
+      // controller: controller,
       minLines: 1,
       keyboardType: TextInputType.multiline,
       maxLines: 5,
       maxLength: 500,
+      onChanged: (value) {
+        print(value);
+      },
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Color(0xffEDF1F2), width: 2),
@@ -382,7 +474,11 @@ class TicketView extends StatelessWidget {
     );
   }
 
-  Future<dynamic> _cerrarColicitudDialog(BuildContext context) {
+  Future<dynamic> _cerrarColicitudDialog(
+    BuildContext context,
+    int idSolicitud,
+    SolicitudesProvider solicitudesProvider,
+  ) {
     return showDialog(
       context: context,
       builder: (builder) {
@@ -401,14 +497,27 @@ class TicketView extends StatelessWidget {
                   text: 'Cerrar solicitud',
                   color: Colors.blue,
                   onPressed: () {
-                    Navigator.pop(context);
-                    showDialog(
-                        context: context,
-                        builder: (builder) {
-                          return AlertDialog(
-                            content: Text('Solicitud cerrada exitosamente.'),
-                          );
-                        });
+                    // Navigator.pop(context);
+
+                    print(idSolicitud);
+                    final solicitudCerrada = solicitudesProvider
+                        .cerrarSolicitud(context, idSolicitud);
+                    if (solicitudCerrada) {
+                      NotificationService.solicitudExitosa(
+                          context,
+                          'Solicitud cerrada exitosamente',
+                          Flurorouter.estadosSoporteRoute);
+                      // NavigationService.navigateTo(
+                      //     Flurorouter.estadosSoporteRoute);
+                    }
+
+                    // showDialog(
+                    //     context: context,
+                    //     builder: (builder) {
+                    //       return AlertDialog(
+                    //         content: Text('Solicitud cerrada exitosamente.'),
+                    //       );
+                    //     });
                   },
                 ),
               ],
@@ -476,6 +585,13 @@ class _CheckBoxDetalle extends StatefulWidget {
 
 class _CheckBoxDetalleState extends State<_CheckBoxDetalle> {
   @override
+  void initState() {
+    super.initState();
+    // Provider.of<SolicitudesProvider>(context, listen: false)
+    //                     .inicializarDetalle();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
       controlAffinity: ListTileControlAffinity.leading,
@@ -484,6 +600,8 @@ class _CheckBoxDetalleState extends State<_CheckBoxDetalle> {
       onChanged: (value) {
         setState(() {
           widget.valor = value!;
+          Provider.of<SolicitudesProvider>(context, listen: false)
+              .cargarDetalle(widget.valor);
         });
       },
     );
@@ -584,6 +702,89 @@ class _CustomDropDownState extends State<_CustomDropDown> {
       onChanged: (String? newValue) {
         selectedValue = newValue!;
         setState(() {});
+      },
+    );
+  }
+}
+
+class _CustomDateTimePicker extends StatelessWidget {
+  // TextEditingController? controller = TextEditingController();
+  String? title = 'Calendario';
+
+  _CustomDateTimePicker({
+    Key? key,
+    // this.controller,
+    this.title,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final solicitudesProvider = Provider.of<SolicitudesProvider>(context);
+    // late DisponibilidadCitas? disponibilidad;
+
+    return DateTimePicker(
+      initialTime: const TimeOfDay(hour: 10, minute: 00),
+      initialDate: (DateTime.now().weekday == 7)
+          ? DateTime(
+              DateTime.now().year, DateTime.now().month, DateTime.now().day + 1)
+          : DateTime.now(),
+      calendarTitle: title,
+      type: DateTimePickerType.dateTimeSeparate,
+      dateMask: 'd MMM, yyyy',
+      initialValue: (DateTime.now().weekday == 7)
+          ? DateTime(DateTime.now().year, DateTime.now().month,
+                  DateTime.now().day + 1)
+              .toString()
+          : DateTime.now().toString(),
+      // firstDate: DateTime.now(),
+      firstDate: (DateTime.now().weekday == 7)
+          ? DateTime(
+              DateTime.now().year, DateTime.now().month, DateTime.now().day + 1)
+          : DateTime.now(),
+      lastDate: DateTime(2100),
+      icon: const Icon(Icons.event),
+      dateLabelText: 'Fecha',
+      timeLabelText: 'Hora',
+      onFieldSubmitted: (val) {
+        // print('OnfFieldSubmitted: $val');
+      },
+      onEditingComplete: () {},
+      // Deshabilita fines de semana
+      selectableDayPredicate: (date) => (date.weekday == 7) ? false : true,
+      // onChanged: (val) => print(val),
+      onChanged: (val) async {
+        solicitudesProvider.cargarFecha(val);
+      },
+      //   print(val);
+      //   solicitudesProvider.cargarFecha(val);
+      //   // print(val.substring(0, 10));
+      //   // disponibilidad =
+      //   //     await Provider.of<SolicitudesProvider>(context, listen: false)
+      //   //         .verificarDisponibilidad(val.substring(0, 10))
+      //   //         .then((value) {
+      //   //   // Aquí es la carga de la fecha
+      //   //   // print(val.substring(0, 10));
+      //   //   // print('Citas registradas: ${value.solicitudesCount}');
+      //   //   if (value.solicitudesCount >= 5) {
+      //   //     solicitudesProvider.cargarDisponibilidad(false);
+      //   //     NotificationService.genericDialog(context,
+      //   //         'No hay citas disponibles para esta fecha:\n${val.substring(0, 10)}');
+      //   //     // print('No hay citas disponibles para esta fecha');
+      //   //   } else {
+      //   //     solicitudesProvider.cargarDisponibilidad(true);
+      //   //   }
+      //   // });
+      //   // print('Citas registradas: ${disponibilidad!.solicitudesCount}');
+      // },
+      validator: (val) {
+        // print(val);
+        return null;
+      },
+      onSaved: (val) {
+        // controller!.text = val!;
+        // print(val);
+        // Provider.of<SolicitudesProvider>(context, listen: false)
+        //     .cargarFecha(val!);
       },
     );
   }

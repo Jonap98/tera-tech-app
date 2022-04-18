@@ -66,17 +66,27 @@ class CafeApi {
     }
   }
 
-  // static Future uploadFile(String path, Uint8List bytes) async {
-  //   final formData = FormData.fromMap({
-  //     'imagen': MultipartFile.fromBytes(bytes),
-  //   });
+  static Future httpPut(String path, Map<String, dynamic> data) async {
+    final FormData formData = FormData.fromMap(data);
 
-  //   try {
-  //     final resp = await _dio.post(path, data: formData);
+    try {
+      final resp = await _dio.put(path, data: formData);
 
-  //     return resp.data;
-  //   } on DioError catch (e) {
-  //     throw ('Error en el Put $e');
-  //   }
-  // }
+      return resp.data;
+    } catch (e) {
+      print(e);
+      throw ('Error en el PUT');
+    }
+  }
+
+  static Future httpPut2(String path) async {
+    try {
+      final resp = await _dio.put(path);
+
+      return resp.data;
+    } catch (e) {
+      print(e);
+      throw ('Error en el PUT');
+    }
+  }
 }

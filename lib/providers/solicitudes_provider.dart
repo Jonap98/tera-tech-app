@@ -4,10 +4,12 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tera_tech_app/api/cafe_api.dart';
 import 'package:tera_tech_app/models/categorias_model.dart';
 import 'package:tera_tech_app/models/disponibilidad_citas.dart';
 import 'package:tera_tech_app/models/solicitudes_model.dart';
+import 'package:tera_tech_app/router/router.dart';
 // import 'package:tera_tech_app/router/router.dart';
 // import 'package:tera_tech_app/services/local_storage.dart';
 // import 'package:tera_tech_app/services/navigation_service.dart';
@@ -58,6 +60,31 @@ class SolicitudesProvider extends ChangeNotifier {
     // print(solicitudes);
   }
 
+  Future<SolicitudesResponse> getSolicitudesEstadoTecnico(
+      int? idSolicitud, int idEstado, int idTecnico) async {
+    // CafeApi.configureDio();
+
+    // print(idUsuario);
+    late dynamic resp;
+    if (idSolicitud != null) {
+      resp = await CafeApi.httpGet(
+          '/solicitudes?id=$idSolicitud&idEstado=$idEstado&idTecnico=$idTecnico');
+    } else {
+      resp = await CafeApi.httpGet(
+          '/solicitudes?idEstado=$idEstado&idTecnico=$idTecnico');
+    }
+    print(resp);
+    final solicitudesResp = SolicitudesResponse.fromMap(resp);
+
+    solicitudes = solicitudesResp;
+
+    notifyListeners();
+
+    return solicitudes;
+
+    // print(solicitudes);
+  }
+
   Future<List<DatoCategoria>> getCategorias() async {
     final resp = await CafeApi.httpGet('/categorias');
     final categoriasResp = Categorias.fromMap(resp);
@@ -91,7 +118,7 @@ class SolicitudesProvider extends ChangeNotifier {
 
     CafeApi.httpPost('/crear-solicitud', data).then((json) {
       NotificationService.solicitudExitosa(
-          context, 'Solicitud creada exitosamente');
+          context, 'Solicitud creada exitosamente', Flurorouter.dashboardRoute);
       // NavigationService.navigateTo(Flurorouter.whiteRoute);
 
       CafeApi.configureDio();
@@ -101,6 +128,63 @@ class SolicitudesProvider extends ChangeNotifier {
     }).catchError((e) {
       NotificationService.showSnackbarError('Error');
       // print(e);
+      return false;
+    });
+    return false;
+  }
+
+  bool atenderSolicitud(
+    BuildContext context,
+    int idSolicitud,
+    bool detalle,
+    String comentario,
+    String fechaListo,
+  ) {
+    final data = {
+      'detalle': (detalle) ? 1 : 0,
+      'comentario': (comentario.isNotEmpty) ? comentario.toString() : null,
+      'fecha_listo': fechaListo.toString(),
+    };
+
+    print('Data: $data');
+
+    CafeApi.httpPost('/atender-solicitud/$idSolicitud', data).then((json) {
+      Provider.of<SolicitudesProvider>(context, listen: false)
+          .inicializarDetalle();
+      NotificationService.solicitudExitosa(
+          context,
+          'Solicitud actualizada exitosamente',
+          Flurorouter.estadosSoporteRoute);
+      // NavigationService.navigateTo(Flurorouter.whiteRoute);
+
+      CafeApi.configureDio();
+
+      notifyListeners();
+      return true;
+    }).catchError((e) {
+      NotificationService.showSnackbarError('Error');
+      print(e);
+      return false;
+    });
+    return false;
+  }
+
+  bool cerrarSolicitud(
+    BuildContext context,
+    int idSolicitud,
+  ) {
+    CafeApi.httpPut2('/cerrar-solicitud/$idSolicitud').then((json) {
+      NotificationService.solicitudExitosa(context,
+          'Solicitud cerrada exitosamente', Flurorouter.estadosSoporteRoute);
+      // NavigationService.navigateTo(Flurorouter.whiteRoute);
+
+      CafeApi.configureDio();
+
+      notifyListeners();
+      return true;
+    }).catchError((e) {
+      NotificationService.showSnackbarError('Error');
+      print(e);
       return false;
     });
     return false;
@@ -181,6 +265,21 @@ class SolicitudesProvider extends ChangeNotifier {
 
   bool get obtenerDisponibilidad {
     return _disponibilidad;
+  }
+
+  bool _detalle = false;
+  cargarDetalle(bool detalle) {
+    _detalle = detalle;
+    notifyListeners();
+  }
+
+  bool get obtenerDetalle {
+    return _detalle;
+  }
+
+  inicializarDetalle() {
+    _detalle = false;
+    notifyListeners();
   }
 
   Dato _solicitud = Dato(

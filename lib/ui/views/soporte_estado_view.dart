@@ -21,21 +21,43 @@ class SoporteEstadoView extends StatefulWidget {
 
 class _SoporteEstadoViewState extends State<SoporteEstadoView> {
   late Estado estado;
+  // late int? idUser;
+  // late int? idRol;
+  // late Future<SolicitudesResponse> datos;
+
   @override
   void initState() {
     super.initState();
     estado =
         Provider.of<RecursosProvider>(context, listen: false).obtenerEstado;
+
+    //   idUser = LocalStorage.prefs.getInt('id_usuario');
+    //   idRol = LocalStorage.prefs.getInt('rol');
+    //   // datos = Provider.of<SolicitudesProvider>(context, listen: false)
+    //   //     .getSolicitudes(idUser!);
+    //   if (idRol == 1) {
+    //     datos = Provider.of<SolicitudesProvider>(context, listen: false)
+    //         .getSolicitudesEstado(null, estado.id);
+    //   } else if (idRol == 2) {
+    //     datos = Provider.of<SolicitudesProvider>(context, listen: false)
+    //         .getSolicitudesEstadoTecnico(null, estado.id, idUser!);
+    //   }
   }
 
   @override
   Widget build(BuildContext context) {
     final idUser = LocalStorage.prefs.getInt('id_usuario');
     late Future<SolicitudesResponse> datos;
+    final idRol = LocalStorage.prefs.getInt('rol');
     // datos = Provider.of<SolicitudesProvider>(context, listen: false)
     //     .getSolicitudes(idUser!);
-    datos = Provider.of<SolicitudesProvider>(context, listen: false)
-        .getSolicitudesEstado(null, estado.id);
+    if (idRol == 1) {
+      datos = Provider.of<SolicitudesProvider>(context, listen: false)
+          .getSolicitudesEstado(null, estado.id);
+    } else if (idRol == 2) {
+      datos = Provider.of<SolicitudesProvider>(context, listen: false)
+          .getSolicitudesEstadoTecnico(null, estado.id, idUser!);
+    }
 
     return Container(
       margin: const EdgeInsets.only(top: 30, left: 50, right: 50),

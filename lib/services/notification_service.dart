@@ -65,7 +65,7 @@ class NotificationService {
         context: context, barrierDismissible: false, builder: (_) => dialog);
   }
 
-  static solicitudExitosa(BuildContext context, mensaje) {
+  static solicitudExitosa(BuildContext context, mensaje, String route) {
     final AlertDialog dialog = AlertDialog(
       content: Container(
         height: 80,
@@ -77,8 +77,7 @@ class NotificationService {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () =>
-                  NavigationService.navigateTo(Flurorouter.whiteRoute),
+              onPressed: () => NavigationService.navigateTo(route),
               child: const Text('Aceptar'),
             )
           ],
