@@ -52,8 +52,8 @@ class Dato {
     this.comentario,
     this.fechaListo,
     this.fechaReal,
-    required this.nombreCategoria,
-    required this.nombreEstado,
+    this.nombreCategoria,
+    this.nombreEstado,
     this.nombreUsuario,
     this.apellido,
   });
@@ -69,8 +69,8 @@ class Dato {
   String? comentario;
   String? fechaListo;
   String? fechaReal;
-  String nombreCategoria;
-  String nombreEstado;
+  String? nombreCategoria;
+  String? nombreEstado;
   String? nombreUsuario;
   String? apellido;
 

@@ -8,12 +8,12 @@ import 'package:tera_tech_app/models/roles_model.dart';
 import 'package:tera_tech_app/providers/auth_provider.dart';
 import 'package:tera_tech_app/providers/recursos_provider.dart';
 import 'package:tera_tech_app/providers/register_form_provider.dart';
-import 'package:tera_tech_app/router/router.dart';
+// import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/services/notification_service.dart';
 import 'package:tera_tech_app/ui/buttons/boton_azul.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
 // import 'package:tera_tech_app/ui/inputs/custom_input.dart';
-import 'package:tera_tech_app/ui/layouts/auth/widgets/labels.dart';
+// import 'package:tera_tech_app/ui/layouts/auth/widgets/labels.dart';
 
 class RegistrarEmpleadoView extends StatelessWidget {
   const RegistrarEmpleadoView({Key? key}) : super(key: key);
@@ -152,8 +152,8 @@ class RegistrarEmpleadoView extends StatelessWidget {
                                             listen: false)
                                         .obtenerEspecialidad;
 
-                                print('Rol: ${rol.nombre}');
-                                print('Especialidad: ${especialidad.nombre}');
+                                // print('Rol: ${rol.nombre}');
+                                // print('Especialidad: ${especialidad.nombre}');
 
                                 if (rol.nombre == '') {
                                   NotificationService.genericDialog(
@@ -165,7 +165,7 @@ class RegistrarEmpleadoView extends StatelessWidget {
                                 } else {
                                   final pass =
                                       '${registerFormProvider.lastName.substring(0, 3)}${registerFormProvider.name.substring(0, 3)}123.';
-                                  print('Password: $pass');
+                                  // print('Password: $pass');
 
                                   final authProvider =
                                       Provider.of<AuthProvider>(context,

@@ -19,6 +19,7 @@ class EstadosSolicitudesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final idRol = LocalStorage.prefs.getInt('rol');
+    final solicitudesProvider = Provider.of<SolicitudesProvider>(context);
     // idRol == 1 - Admin
     // idRol == 2 - Técnico
 
@@ -53,7 +54,29 @@ class EstadosSolicitudesView extends StatelessWidget {
                 )
               : Container(width: 20),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              // final cliente =
+              //     Provider.of<RecursosProvider>(context, listen: false)
+              //         .obtenerClienteSeleccionado;
+              // final tecnico =
+              //     Provider.of<RecursosProvider>(context, listen: false)
+              //         .obtenerTecnicoSeleccionado;
+
+              // print('Cliente: ${cliente.name}');
+              // print('Técnico: $tecnicoSeleccionado');
+              solicitudesProvider.aplicarFiltros();
+              // Provider.of<RecursosProvider>(context, listen: false)
+              //     .cargarCliente(cliente);
+              // Provider.of<RecursosProvider>(context, listen: false)
+              //     .cargarTecnico(tecnico);
+              Future.delayed(Duration(milliseconds: 300), () {
+                NavigationService.navigateTo(
+                    Flurorouter.solicitudesEstadosRoute);
+              });
+              // Provider.of<RecursosProvider>(context, listen: false)
+              //     .cargarFiltros(
+              //         clienteSeleccionado!.id, tecnicoSeleccionado!.id);
+            },
             child: const Text('Buscar'),
           ),
           Wrap(
@@ -253,10 +276,20 @@ class _DropdownClientesState extends State<_DropdownClientes> {
   late Future<List<DatoCliente>> clientes;
   @override
   void initState() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Provider.of<RecursosProvider>(context, listen: false).eliminarCliente();
+    });
     super.initState();
     clientes =
         Provider.of<RecursosProvider>(context, listen: false).getClientes();
   }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Provider.of<RecursosProvider>(context, listen: false).eliminarCliente();
+  //   clientes =
+  //       Provider.of<RecursosProvider>(context, listen: false).getClientes();
+  // }**
 
   @override
   Widget build(BuildContext context) {

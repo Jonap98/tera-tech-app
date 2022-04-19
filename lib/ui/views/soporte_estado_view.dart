@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tera_tech_app/models/clientes_model.dart';
 import 'package:tera_tech_app/models/estados_model.dart';
 import 'package:tera_tech_app/models/solicitudes_model.dart';
+import 'package:tera_tech_app/models/tecnicos_model.dart';
 import 'package:tera_tech_app/providers/recursos_provider.dart';
 import 'package:tera_tech_app/providers/solicitudes_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
@@ -20,16 +22,22 @@ class SoporteEstadoView extends StatefulWidget {
 }
 
 class _SoporteEstadoViewState extends State<SoporteEstadoView> {
-  late Estado estado;
+  Estado estado = Estado(id: -1, nombre: '');
   // late int? idUser;
   // late int? idRol;
   // late Future<SolicitudesResponse> datos;
+  late bool aplicaFiltros;
+  late int idUser;
+  late Future<SolicitudesResponse> datos;
+  late int idRol;
+  late DatoCliente cliente;
+  late DatoTecnico tecnico;
+
+  late Future<SolicitudesResponse> futureDatos;
 
   @override
   void initState() {
     super.initState();
-    estado =
-        Provider.of<RecursosProvider>(context, listen: false).obtenerEstado;
 
     //   idUser = LocalStorage.prefs.getInt('id_usuario');
     //   idRol = LocalStorage.prefs.getInt('rol');
@@ -42,22 +50,59 @@ class _SoporteEstadoViewState extends State<SoporteEstadoView> {
     //     datos = Provider.of<SolicitudesProvider>(context, listen: false)
     //         .getSolicitudesEstadoTecnico(null, estado.id, idUser!);
     //   }
+    idUser = LocalStorage.prefs.getInt('id_usuario')!;
+    idRol = LocalStorage.prefs.getInt('rol')!;
+    aplicaFiltros =
+        Provider.of<SolicitudesProvider>(context, listen: false).hayFiltros;
+
+    if (aplicaFiltros) {
+      cliente = Provider.of<RecursosProvider>(context, listen: false)
+          .obtenerClienteSeleccionado;
+
+      tecnico = Provider.of<RecursosProvider>(context, listen: false)
+          .obtenerTecnicoSeleccionado;
+
+      if (cliente.id != -1 && tecnico.id != -1) {
+        datos = Provider.of<SolicitudesProvider>(context, listen: false)
+            .getSolicitudesFiltro(cliente.id, tecnico.id);
+      } else if (cliente.id != -1) {
+        datos = Provider.of<SolicitudesProvider>(context, listen: false)
+            .getSolicitudesFiltro(cliente.id, -1);
+      } else if (tecnico.id != -1) {
+        datos = Provider.of<SolicitudesProvider>(context, listen: false)
+            .getSolicitudesFiltro(-1, tecnico.id);
+      } else {
+        datos = Provider.of<SolicitudesProvider>(context, listen: false)
+            .getSolicitudesFiltro(-1, -1);
+      }
+      Provider.of<SolicitudesProvider>(context, listen: false)
+          .eliminarFiltros();
+    } else {
+      estado =
+          Provider.of<RecursosProvider>(context, listen: false).obtenerEstado;
+      if (idRol == 1) {
+        datos = Provider.of<SolicitudesProvider>(context, listen: false)
+            .getSolicitudesEstado(null, estado.id);
+      } else if (idRol == 2) {
+        datos = Provider.of<SolicitudesProvider>(context, listen: false)
+            .getSolicitudesEstadoTecnico(null, estado.id, idUser);
+      }
+    }
+    // futureDatos = datos;
   }
 
   @override
   Widget build(BuildContext context) {
-    final idUser = LocalStorage.prefs.getInt('id_usuario');
-    late Future<SolicitudesResponse> datos;
-    final idRol = LocalStorage.prefs.getInt('rol');
     // datos = Provider.of<SolicitudesProvider>(context, listen: false)
     //     .getSolicitudes(idUser!);
-    if (idRol == 1) {
-      datos = Provider.of<SolicitudesProvider>(context, listen: false)
-          .getSolicitudesEstado(null, estado.id);
-    } else if (idRol == 2) {
-      datos = Provider.of<SolicitudesProvider>(context, listen: false)
-          .getSolicitudesEstadoTecnico(null, estado.id, idUser!);
-    }
+
+    // if (aplicaFiltros) {
+    //   print('Filtros');
+    // } else {
+    //   futureDatos = datos;
+    // }
+
+    // }
 
     return Container(
       margin: const EdgeInsets.only(top: 30, left: 50, right: 50),
@@ -66,10 +111,28 @@ class _SoporteEstadoViewState extends State<SoporteEstadoView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            estado.nombre,
-            style: CustomLabels.h1,
-          ),
+          (estado.nombre == '')
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Filtros',
+                      style: CustomLabels.h1,
+                    ),
+                    (cliente.id != -1)
+                        ? Text(
+                            'Cliente: ${cliente.name} ${cliente.lastName}',
+                          )
+                        : Container(),
+                    (tecnico.id != -1)
+                        ? Text('Técnico: ${tecnico.name} ${tecnico.lastName}')
+                        : Container(),
+                  ],
+                )
+              : Text(
+                  estado.nombre,
+                  style: CustomLabels.h1,
+                ),
           const SizedBox(height: 20),
           Expanded(
             // padding: const EdgeInsets.all(value),s
@@ -192,7 +255,7 @@ class _SoporteEstadoViewState extends State<SoporteEstadoView> {
                                           Text(
                                             // '${solicitudes[index]['nombre']}',
                                             snapshot.data!.datos[index]
-                                                .nombreCategoria,
+                                                .nombreCategoria!,
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           ),
@@ -245,78 +308,78 @@ class _SoporteEstadoViewState extends State<SoporteEstadoView> {
   }
 }
 
-class _SoportePorEstado extends StatelessWidget {
-  int index;
-  // final VoidCallback? onPressed;
+// class _SoportePorEstado extends StatelessWidget {
+//   int index;
+//   // final VoidCallback? onPressed;
 
-  _SoportePorEstado({
-    Key? key,
-    required this.index,
-    // required this.onPressed,
-    required this.solicitudes,
-  }) : super(key: key);
+//   _SoportePorEstado({
+//     Key? key,
+//     required this.index,
+//     // required this.onPressed,
+//     required this.solicitudes,
+//   }) : super(key: key);
 
-  // final List<Map<String, Object>> solicitudes;
-  final SolicitudesResponse solicitudes;
+//   // final List<Map<String, Object>> solicitudes;
+//   final SolicitudesResponse solicitudes;
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            onTap: () => NavigationService.navigateTo(
-                Flurorouter.ticketDeSolicitudRoute),
-            child: Container(
-              // margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                children: [
-                  // (solicitudes[index]['id_categoria'] == 1)
-                  (solicitudes.datos[index].idCategoria == 1)
-                      ? const Icon(Icons.home_repair_service,
-                          size: 40, color: Colors.blue)
-                      : (solicitudes.datos[index].idCategoria == 2)
-                          ? const Icon(Icons.update,
-                              size: 40, color: Colors.blue)
-                          : (solicitudes.datos[index].idCategoria == 3)
-                              ? const Icon(Icons.downloading,
-                                  size: 40, color: Colors.blue)
-                              : (solicitudes.datos[index].idCategoria == 4)
-                                  ? const Icon(Icons.handyman,
-                                      size: 40, color: Colors.blue)
-                                  : (solicitudes.datos[index].idCategoria == 5)
-                                      ? const Icon(Icons.report,
-                                          size: 40, color: Colors.blue)
-                                      : const Icon(Icons.more_horiz,
-                                          size: 40, color: Colors.blue),
-                  const SizedBox(width: 20),
-                  Container(height: 30, width: 2, color: Colors.black),
-                  const SizedBox(width: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        // '${solicitudes[index]['nombre']}',
-                        solicitudes.datos[index].nombreCategoria,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      // Text('${solicitudes[index]['fecha']}'),
-                      Text(solicitudes.datos[index].fechaCita),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         MouseRegion(
+//           cursor: SystemMouseCursors.click,
+//           child: GestureDetector(
+//             onTap: () => NavigationService.navigateTo(
+//                 Flurorouter.ticketDeSolicitudRoute),
+//             child: Container(
+//               // margin: const EdgeInsets.all(10),
+//               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.circular(10),
+//               ),
+//               child: Row(
+//                 children: [
+//                   // (solicitudes[index]['id_categoria'] == 1)
+//                   (solicitudes.datos[index].idCategoria == 1)
+//                       ? const Icon(Icons.home_repair_service,
+//                           size: 40, color: Colors.blue)
+//                       : (solicitudes.datos[index].idCategoria == 2)
+//                           ? const Icon(Icons.update,
+//                               size: 40, color: Colors.blue)
+//                           : (solicitudes.datos[index].idCategoria == 3)
+//                               ? const Icon(Icons.downloading,
+//                                   size: 40, color: Colors.blue)
+//                               : (solicitudes.datos[index].idCategoria == 4)
+//                                   ? const Icon(Icons.handyman,
+//                                       size: 40, color: Colors.blue)
+//                                   : (solicitudes.datos[index].idCategoria == 5)
+//                                       ? const Icon(Icons.report,
+//                                           size: 40, color: Colors.blue)
+//                                       : const Icon(Icons.more_horiz,
+//                                           size: 40, color: Colors.blue),
+//                   const SizedBox(width: 20),
+//                   Container(height: 30, width: 2, color: Colors.black),
+//                   const SizedBox(width: 20),
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Text(
+//                         // '${solicitudes[index]['nombre']}',
+//                         solicitudes.datos[index].nombreCategoria!,
+//                         style: const TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                       // Text('${solicitudes[index]['fecha']}'),
+//                       Text(solicitudes.datos[index].fechaCita),
+//                     ],
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//         const SizedBox(height: 10),
+//       ],
+//     );
+//   }
+// }

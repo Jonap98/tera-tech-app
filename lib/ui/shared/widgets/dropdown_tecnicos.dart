@@ -20,10 +20,20 @@ class _DropdownTecnicosState extends State<DropdownTecnicos> {
   late Future<List<DatoTecnico>> tecnicos;
   @override
   void initState() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Provider.of<RecursosProvider>(context, listen: false).eliminarTecnico();
+    });
     super.initState();
     tecnicos =
         Provider.of<RecursosProvider>(context, listen: false).getTecnicos();
   }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Provider.of<RecursosProvider>(context, listen: false).eliminarTecnico();
+  //   tecnicos =
+  //       Provider.of<RecursosProvider>(context, listen: false).getTecnicos();
+  // }
 
   @override
   Widget build(BuildContext context) {

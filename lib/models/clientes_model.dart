@@ -35,18 +35,21 @@ class Clientes {
 
 class DatoCliente {
   DatoCliente({
+    required this.id,
     required this.idRol,
     required this.name,
     required this.lastName,
     required this.email,
   });
 
+  int id;
   int idRol;
   String name;
   String lastName;
   String email;
 
   factory DatoCliente.fromMap(Map<String, dynamic> json) => DatoCliente(
+        id: json["id"],
         idRol: json["id_rol"],
         name: json["name"],
         lastName: json["last_name"],
@@ -54,6 +57,7 @@ class DatoCliente {
       );
 
   Map<String, dynamic> toMap() => {
+        "id": id,
         "id_rol": idRol,
         "name": name,
         "last_name": lastName,

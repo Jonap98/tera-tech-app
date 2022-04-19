@@ -10,10 +10,10 @@ import 'package:tera_tech_app/providers/recursos_provider.dart';
 import 'package:tera_tech_app/providers/solicitudes_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/services/local_storage.dart';
-import 'package:tera_tech_app/services/navigation_service.dart';
+// import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/services/notification_service.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
-import 'package:tera_tech_app/ui/layouts/auth/widgets/datetime_picker.dart';
+// import 'package:tera_tech_app/ui/layouts/auth/widgets/datetime_picker.dart';
 import 'package:tera_tech_app/ui/layouts/auth/widgets/images.dart';
 import 'package:tera_tech_app/ui/shared/widgets/dropdown_tecnicos.dart';
 
@@ -448,31 +448,6 @@ class _TicketViewState extends State<TicketView> {
           ),
         );
       },
-    );
-  }
-
-  TextFormField _textFormField() {
-    return TextFormField(
-      // controller: controller,
-      minLines: 1,
-      keyboardType: TextInputType.multiline,
-      maxLines: 5,
-      maxLength: 500,
-      onChanged: (value) {
-        print(value);
-      },
-      decoration: InputDecoration(
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xffEDF1F2), width: 2),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color(0xffEDF1F2), width: 2),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        filled: true,
-        fillColor: const Color(0xffEDF1F2),
-      ),
     );
   }
 

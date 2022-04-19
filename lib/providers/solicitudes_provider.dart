@@ -48,7 +48,7 @@ class SolicitudesProvider extends ChangeNotifier {
     } else {
       resp = await CafeApi.httpGet('/solicitudes?idEstado=$idEstado');
     }
-    print(resp);
+    // print(resp);
     final solicitudesResp = SolicitudesResponse.fromMap(resp);
 
     solicitudes = solicitudesResp;
@@ -73,7 +73,44 @@ class SolicitudesProvider extends ChangeNotifier {
       resp = await CafeApi.httpGet(
           '/solicitudes?idEstado=$idEstado&idTecnico=$idTecnico');
     }
-    print(resp);
+    // print(resp);
+    final solicitudesResp = SolicitudesResponse.fromMap(resp);
+
+    solicitudes = solicitudesResp;
+
+    notifyListeners();
+
+    return solicitudes;
+
+    // print(solicitudes);
+  }
+
+  Future<SolicitudesResponse> getSolicitudesFiltro(
+      int? idCliente, int? idTecnico) async {
+    // CafeApi.configureDio();
+    late dynamic resp;
+
+    if (idCliente != -1 && idTecnico == -1) {
+      resp = await CafeApi.httpGet('/solicitudes?idCliente=$idCliente');
+    } else if (idCliente == -1 && idTecnico != -1) {
+      resp = await CafeApi.httpGet('/solicitudes?idTecnico=$idTecnico');
+    } else if (idCliente != -1 && idTecnico != -1) {
+      resp = await CafeApi.httpGet(
+          '/solicitudes?idCliente=$idCliente&idTecnico=$idTecnico');
+    } else {
+      resp = await CafeApi.httpGet('/solicitudes?idCliente=-1&idTecnico=-1');
+    }
+
+    // print(idUsuario);
+    // late dynamic resp;
+    // if (idCliente != null) {
+    //   resp = await CafeApi.httpGet(
+    //       '/solicitudes?id=$idSolicitud&idEstado=$idEstado');
+    // } else {
+    //   resp = await CafeApi.httpGet('/solicitudes?idEstado=$idEstado');
+    // }
+    // print('/solicitudes?idCliente=${idCliente!}&idEstado=${idTecnico!}');
+    // print(resp);
     final solicitudesResp = SolicitudesResponse.fromMap(resp);
 
     solicitudes = solicitudesResp;
@@ -171,7 +208,7 @@ class SolicitudesProvider extends ChangeNotifier {
       'fecha_listo': fechaListo.toString(),
     };
 
-    print('Data: $data');
+    // print('Data: $data');
 
     CafeApi.httpPost('/atender-solicitud/$idSolicitud', data).then((json) {
       Provider.of<SolicitudesProvider>(context, listen: false)
@@ -188,7 +225,7 @@ class SolicitudesProvider extends ChangeNotifier {
       return true;
     }).catchError((e) {
       NotificationService.showSnackbarError('Error');
-      print(e);
+      // print(e);
       return false;
     });
     return false;
@@ -209,7 +246,7 @@ class SolicitudesProvider extends ChangeNotifier {
       return true;
     }).catchError((e) {
       NotificationService.showSnackbarError('Error');
-      print(e);
+      // print(e);
       return false;
     });
     return false;
@@ -333,6 +370,21 @@ class SolicitudesProvider extends ChangeNotifier {
         fechaCita: '',
         nombreCategoria: '',
         nombreEstado: '');
+    notifyListeners();
+  }
+
+  bool _aplicaFiltros = false;
+  aplicarFiltros() {
+    _aplicaFiltros = true;
+    notifyListeners();
+  }
+
+  bool get hayFiltros {
+    return _aplicaFiltros;
+  }
+
+  eliminarFiltros() {
+    _aplicaFiltros = false;
     notifyListeners();
   }
 }

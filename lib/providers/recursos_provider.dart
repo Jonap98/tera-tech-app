@@ -49,6 +49,18 @@ class RecursosProvider extends ChangeNotifier {
     return _tecnicoSeleccionado;
   }
 
+  eliminarTecnico() {
+    _tecnicoSeleccionado = DatoTecnico(
+        id: -1,
+        idRol: -1,
+        idEspecialidad: -1,
+        name: '',
+        lastName: '',
+        email: '',
+        especialidad: '');
+    notifyListeners();
+  }
+
   late Rol _rolSeleccionado = Rol(id: -1, nombre: '');
   cargarRol(Rol rolSeleccionado) {
     _rolSeleccionado = rolSeleccionado;
@@ -84,7 +96,7 @@ class RecursosProvider extends ChangeNotifier {
   }
 
   late DatoCliente _clienteSeleccionado =
-      DatoCliente(idRol: -1, name: '', lastName: '', email: '');
+      DatoCliente(id: -1, idRol: -1, name: '', lastName: '', email: '');
   cargarCliente(DatoCliente clienteSeleccionado) {
     _clienteSeleccionado = clienteSeleccionado;
     notifyListeners();
@@ -92,6 +104,12 @@ class RecursosProvider extends ChangeNotifier {
 
   DatoCliente get obtenerClienteSeleccionado {
     return _clienteSeleccionado;
+  }
+
+  eliminarCliente() {
+    _clienteSeleccionado =
+        DatoCliente(id: -1, idRol: -1, name: '', lastName: '', email: '');
+    notifyListeners();
   }
 
   Estado _estado = Estado(id: -1, nombre: '');
@@ -109,7 +127,25 @@ class RecursosProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int _idSolicitud = 0, _idEstado = 0, _idTecnico = 0;
+  // int? _idClienteFiltro;
+  // int? _idTecnicoFiltro;
+  // cargarFiltros(int? idClienteFiltro, int? idTecnicoFiltro) {
+  //   _idClienteFiltro = idClienteFiltro!;
+  //   _idTecnicoFiltro = idTecnicoFiltro!;
+  //   notifyListeners();
+  // }
+
+  // int get obtenerIdClienteFiltro {
+  //   return _idClienteFiltro!;
+  // }
+
+  // int get obtenerIdTecnicoFiltro {
+  //   return _idTecnicoFiltro!;
+  // }
+
+  int _idSolicitud = 0;
+  int _idEstado = 0;
+  final int _idTecnico = 0;
   cargarIdsSolicitud(int idSolicitud, int idEstado) {
     _idSolicitud = idSolicitud;
     _idEstado = idEstado;
