@@ -126,7 +126,7 @@ class AuthProvider extends ChangeNotifier {
       'password_confirmation': password,
     };
 
-    CafeApi.httpPost('/registro', data).then((json) {
+    CafeApi.httpPost('/registro-empleados', data).then((json) {
       // print(json);
       final authResponse = AuthResponse.fromMap(json);
       user = authResponse.data.currentUser;
