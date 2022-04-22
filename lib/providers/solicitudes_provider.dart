@@ -18,7 +18,24 @@ import 'package:tera_tech_app/services/notification_service.dart';
 class SolicitudesProvider extends ChangeNotifier {
   late SolicitudesResponse solicitudes;
 
-  Future<SolicitudesResponse> getSolicitudes(int idUsuario) async {
+  getSolicitudes() async {
+    // CafeApi.configureDio();
+
+    // print(idUsuario);
+    final resp = await CafeApi.httpGet('/solicitudes');
+    // print(resp);
+    final solicitudesResp = SolicitudesResponse.fromMap(resp);
+
+    solicitudes = solicitudesResp;
+
+    notifyListeners();
+
+    // return solicitudes;
+
+    // print(solicitudes);
+  }
+
+  Future<SolicitudesResponse> getSolicitudesUsuario(int idUsuario) async {
     // CafeApi.configureDio();
 
     // print(idUsuario);
@@ -252,6 +269,29 @@ class SolicitudesProvider extends ChangeNotifier {
     return false;
   }
 
+  String horarioSeleccionado = '00';
+  seleccionarHorario(String horario) {
+    horarioSeleccionado = horario;
+    notifyListeners();
+  }
+
+  eliminarHorario() {
+    horarioSeleccionado = '00';
+    notifyListeners();
+  }
+
+  DisponibilidadCitas disponibilidadCitas = DisponibilidadCitas(
+    result: true,
+    fecha: '',
+    disponibles: Disponibles(
+      h11: false,
+      h12: false,
+      h13: false,
+      h15: false,
+      h16: false,
+      h17: false,
+    ),
+  );
   Future<DisponibilidadCitas> verificarDisponibilidad(String fecha) async {
     final data = {
       'fecha_cita': fecha,
@@ -259,6 +299,9 @@ class SolicitudesProvider extends ChangeNotifier {
     // final resp = await CafeApi.httpGet('/categorias');
     final resp = await CafeApi.httpPost('/citas', data);
     final disponibilidadResp = DisponibilidadCitas.fromMap(resp);
+    disponibilidadCitas = disponibilidadResp;
+
+    notifyListeners();
 
     return disponibilidadResp;
   }

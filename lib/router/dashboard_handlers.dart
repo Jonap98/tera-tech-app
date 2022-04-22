@@ -29,7 +29,7 @@ class DashboardHandlers {
     handlerFunc: (context, params) {
       final authProvider = Provider.of<AuthProvider>(context!);
       if (authProvider.authStatus == AuthStatus.authenticated)
-        return SolicitarSoporteView();
+        return const SolicitarSoporteView();
       else
         return const LoginView();
     },

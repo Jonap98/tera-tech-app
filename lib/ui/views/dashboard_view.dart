@@ -27,7 +27,7 @@ class _DashboardViewState extends State<DashboardView> {
     final idUser = LocalStorage.prefs.getInt('id_usuario');
     late Future<SolicitudesResponse> datos;
     datos = Provider.of<SolicitudesProvider>(context, listen: false)
-        .getSolicitudes(idUser!);
+        .getSolicitudesUsuario(idUser!);
 
     return Container(
       margin: const EdgeInsets.only(top: 30, left: 50, right: 50),

@@ -135,7 +135,7 @@ class _TicketViewState extends State<TicketView> {
                               width: double.infinity,
                               child: Text(
                                 // 'Marijose Martinez',
-                                '${snapshot.data!.datos[0].nombreUsuario} ${snapshot.data!.datos[0].apellido}',
+                                '${snapshot.data!.datos[0].nombreUsuario} ${snapshot.data!.datos[0].apellidoUsuario}',
                                 style: TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.w800,

@@ -67,8 +67,9 @@ class Sidebar extends StatelessWidget {
                   icon: Icons.list_alt,
                   text: 'Tickets histórico',
                   onTap: () {
-                    // SideMenuProvider.closeMenu();
-                    // NavigationService.navigateTo(Flurorouter.historicoDeTicketsRoute);
+                    SideMenuProvider.closeMenu();
+                    NavigationService.navigateTo(
+                        Flurorouter.historicoDeTicketsRoute);
                   },
                 ),
           const Spacer(),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:tera_tech_app/api/cafe_api.dart';
 import 'package:tera_tech_app/models/categorias_model.dart';
+import 'package:tera_tech_app/models/disponibilidad_citas.dart';
 import 'package:tera_tech_app/providers/solicitudes_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
 // import 'package:tera_tech_app/router/router.dart';
@@ -14,24 +15,44 @@ import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/services/notification_service.dart';
 // import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/ui/buttons/boton_azul.dart';
+import 'package:tera_tech_app/ui/buttons/horario_button.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
 import 'package:tera_tech_app/ui/layouts/auth/widgets/datetime_picker.dart';
 
-class SolicitarSoporteView extends StatelessWidget {
+class SolicitarSoporteView extends StatefulWidget {
+  const SolicitarSoporteView({Key? key}) : super(key: key);
+
+  @override
+  State<SolicitarSoporteView> createState() => _SolicitarSoporteViewState();
+}
+
+class _SolicitarSoporteViewState extends State<SolicitarSoporteView> {
   TextEditingController descripcionCtrl = TextEditingController();
+
   TextEditingController fechaCtrl = TextEditingController();
+
   final idUser = LocalStorage.prefs.getInt('id_usuario');
-  SolicitarSoporteView({Key? key}) : super(key: key);
+
+  late SolicitudesProvider solicitudProvider;
+  late DisponibilidadCitas disponibilidadProvider;
+  late String fecha;
+  late String fechaCompleta;
+
+  @override
+  void initState() {
+    super.initState();
+    solicitudProvider =
+        Provider.of<SolicitudesProvider>(context, listen: false);
+
+    Provider.of<SolicitudesProvider>(context, listen: false)
+        .verificarDisponibilidad(DateTime.now().toString().substring(0, 10));
+  }
 
   @override
   Widget build(BuildContext context) {
-    final solicitudProvider = Provider.of<SolicitudesProvider>(context);
+    disponibilidadProvider =
+        Provider.of<SolicitudesProvider>(context).disponibilidadCitas;
     DatoCategoria? selectedValue;
-    // String? image = '';
-    // late PlatformFile image = PlatformFile(name: '', size: 0);
-    // PlatformFile image =
-    //     Provider.of<SolicitudesProvider>(context, listen: false)
-    //         .obtenerInformacionImagen;
 
     return ListView(
       // shrinkWrap: true,
@@ -46,8 +67,6 @@ class SolicitarSoporteView extends StatelessWidget {
         ),
         // const SizedBox(height: 20),
         Container(
-          // width: double.infinity,
-          // height: double.infinity,
           margin: const EdgeInsets.all(30),
           padding:
               const EdgeInsets.only(top: 40, left: 40, right: 40, bottom: 40),
@@ -69,28 +88,100 @@ class SolicitarSoporteView extends StatelessWidget {
                   style: TextStyle(fontSize: 16)),
               const SizedBox(height: 16),
               textFormField(descripcionCtrl),
-              // const SizedBox(height: 16),
               const Text('Fecha de cita', style: TextStyle(fontSize: 16)),
               CustomDateTimePicker(
                 title: 'Fecha de cita',
               ),
               const SizedBox(height: 20),
+              Wrap(
+                children: [
+                  HorarioButton(
+                    horaMostrada: '11:00 am',
+                    horario: '11',
+                    provider: disponibilidadProvider.disponibles.h11!,
+                    onTap: () {
+                      // final fecha = solicitudProvider.obtenerFecha.toString();
+                      fecha = disponibilidadProvider.fecha.toString();
+                      // final fechaCompleta =
+                      //     '${(fecha.isNotEmpty) ? DateTime.now().toString().substring(0, 10) : fecha} 11:00:00';
+                      fechaCompleta = '$fecha 11:00:00';
+                      solicitudProvider.seleccionarHorario('11');
+                      // print(fecha);
+                      // print(fechaCompleta);
+                      solicitudProvider.cargarFecha(fechaCompleta);
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  HorarioButton(
+                    horaMostrada: '12:00 pm',
+                    horario: '12',
+                    provider: disponibilidadProvider.disponibles.h12!,
+                    onTap: () {
+                      fecha = disponibilidadProvider.fecha.toString();
+                      fechaCompleta = '$fecha 12:00:00';
+                      solicitudProvider.seleccionarHorario('12');
+                      solicitudProvider.cargarFecha(fechaCompleta);
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  HorarioButton(
+                    horaMostrada: '1:00 pm',
+                    horario: '13',
+                    provider: disponibilidadProvider.disponibles.h13!,
+                    onTap: () {
+                      fecha = disponibilidadProvider.fecha.toString();
+                      fechaCompleta = '$fecha 13:00:00';
+                      solicitudProvider.seleccionarHorario('13');
+                      solicitudProvider.cargarFecha(fechaCompleta);
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  HorarioButton(
+                    horaMostrada: '3:00 pm',
+                    horario: '15',
+                    provider: disponibilidadProvider.disponibles.h15!,
+                    onTap: () {
+                      fecha = disponibilidadProvider.fecha.toString();
+                      fechaCompleta = '$fecha 15:00:00';
+                      solicitudProvider.seleccionarHorario('15');
+                      solicitudProvider.cargarFecha(fechaCompleta);
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  HorarioButton(
+                    horaMostrada: '4:00 pm',
+                    horario: '16',
+                    provider: disponibilidadProvider.disponibles.h16!,
+                    onTap: () {
+                      fecha = disponibilidadProvider.fecha.toString();
+                      fechaCompleta = '$fecha 16:00:00';
+                      solicitudProvider.seleccionarHorario('16');
+                      solicitudProvider.cargarFecha(fechaCompleta);
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  HorarioButton(
+                    horaMostrada: '5:00 pm',
+                    horario: '17',
+                    provider: disponibilidadProvider.disponibles.h17!,
+                    onTap: () {
+                      fecha = disponibilidadProvider.fecha.toString();
+                      fechaCompleta = '$fecha 17:00:00';
+                      solicitudProvider.seleccionarHorario('17');
+                      solicitudProvider.cargarFecha(fechaCompleta);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
               const FileUpload(),
               const SizedBox(height: 16),
-              // ElevatedButton(
-              //     onPressed: () => CafeApi.obtenerUrl(), child: Text('Prueba')),
               CustomElevatedButton(
                   text: 'Solicitar soporte',
                   onPressed: () async {
                     final value =
                         Provider.of<SolicitudesProvider>(context, listen: false)
                             .obtenerSelectedValue;
-                    final fecha =
-                        Provider.of<SolicitudesProvider>(context, listen: false)
-                            .obtenerFecha;
-                    final disponibilidad =
-                        Provider.of<SolicitudesProvider>(context, listen: false)
-                            .obtenerDisponibilidad;
                     PlatformFile image =
                         Provider.of<SolicitudesProvider>(context, listen: false)
                             .obtenerInformacionImagen;
@@ -98,25 +189,23 @@ class SolicitarSoporteView extends StatelessWidget {
                     // establecido por un widget hijo
                     if (value.nombre.isEmpty) {
                       _categoriasAlert(context);
-                    } else if (disponibilidad == false) {
+                    } else if (Provider.of<SolicitudesProvider>(context,
+                                listen: false)
+                            .horarioSeleccionado ==
+                        '00') {
                       NotificationService.genericDialog(
-                          context, 'Seleccione otra fecha');
+                          context, 'Seleccione una fecha y horario');
                     } else {
-                      // print('Nombre: ${image.name}');
-
                       final solicitudCreada = solicitudProvider.crearSolicitud(
                         context,
                         idUser!,
                         value.id,
                         descripcionCtrl.text,
-                        (fecha.isNotEmpty)
-                            ? fecha
-                            : DateTime.now().toString().substring(0, 16),
+                        fechaCompleta,
                         image,
                       );
 
                       if (solicitudCreada) {
-                        // image = PlatformFile(name: '', size: 0, bytes: null);
                         imageCache!.clear();
                         solicitudProvider.eliminarImagen();
                         NotificationService.solicitudExitosa(

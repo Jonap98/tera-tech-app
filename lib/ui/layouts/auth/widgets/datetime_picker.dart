@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tera_tech_app/models/disponibilidad_citas.dart';
 import 'package:tera_tech_app/providers/solicitudes_provider.dart';
-import 'package:tera_tech_app/services/notification_service.dart';
 
 class CustomDateTimePicker extends StatelessWidget {
   TextEditingController? controller = TextEditingController();
@@ -29,7 +28,7 @@ class CustomDateTimePicker extends StatelessWidget {
               DateTime.now().year, DateTime.now().month, DateTime.now().day + 1)
           : DateTime.now(),
       calendarTitle: title,
-      type: DateTimePickerType.dateTimeSeparate,
+      type: DateTimePickerType.date,
       dateMask: 'd MMM, yyyy',
       initialValue: (DateTime.now().weekday == 7)
           ? DateTime(DateTime.now().year, DateTime.now().month,
@@ -56,21 +55,21 @@ class CustomDateTimePicker extends StatelessWidget {
         // print(val.substring(0, 10));
         disponibilidad =
             await Provider.of<SolicitudesProvider>(context, listen: false)
-                .verificarDisponibilidad(val.substring(0, 10))
-                .then((value) {
-          // Aquí es la carga de la fecha
-          // print(val.substring(0, 10));
-          // print('Citas registradas: ${value.solicitudesCount}');
-          if (value.solicitudesCount >= 5) {
-            solicitudesProvider.cargarDisponibilidad(false);
-            NotificationService.genericDialog(context,
-                'No hay citas disponibles para esta fecha:\n${val.substring(0, 10)}');
-            // print('No hay citas disponibles para esta fecha');
-          } else {
-            solicitudesProvider.cargarDisponibilidad(true);
-            solicitudesProvider.cargarFecha(val);
-          }
-        });
+                .verificarDisponibilidad(val.substring(0, 10));
+        // .then((value) {
+        // Aquí es la carga de la fecha
+        // print(val.substring(0, 10));
+        // print('Citas registradas: ${value.solicitudesCount}');
+        // if (value.solicitudesCount >= 6) {
+        //   solicitudesProvider.cargarDisponibilidad(false);
+        //   NotificationService.genericDialog(context,
+        //       'No hay citas disponibles para esta fecha:\n${val.substring(0, 10)}');
+        //   // print('No hay citas disponibles para esta fecha');
+        // } else {
+        //   solicitudesProvider.cargarDisponibilidad(true);
+        //   solicitudesProvider.cargarFecha(val);
+        // }
+        // });
         // print('Citas registradas: ${disponibilidad!.solicitudesCount}');
       },
       validator: (val) {

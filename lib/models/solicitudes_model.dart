@@ -55,7 +55,9 @@ class Dato {
     this.nombreCategoria,
     this.nombreEstado,
     this.nombreUsuario,
-    this.apellido,
+    this.apellidoUsuario,
+    this.nombreTecnico,
+    this.apellidoTecnico,
   });
 
   int id;
@@ -72,7 +74,9 @@ class Dato {
   String? nombreCategoria;
   String? nombreEstado;
   String? nombreUsuario;
-  String? apellido;
+  String? apellidoUsuario;
+  String? nombreTecnico;
+  String? apellidoTecnico;
 
   factory Dato.fromMap(Map<String, dynamic> json) => Dato(
         id: json["id"],
@@ -90,7 +94,9 @@ class Dato {
         nombreCategoria: json["nombre_categoria"],
         nombreEstado: json["nombre_estado"],
         nombreUsuario: json["nombre_usuario"],
-        apellido: json["apellido"],
+        apellidoUsuario: json["apellido_usuario"],
+        nombreTecnico: json["nombre_tecnico"],
+        apellidoTecnico: json["apellido_tecnico"],
       );
 
   // Formato de fechas generados por Quicktype
@@ -114,7 +120,9 @@ class Dato {
         "nombre_categoria": nombreCategoria,
         "nombre_estado": nombreEstado,
         "nombre_usuario": nombreUsuario,
-        "apellido": apellido,
+        "apellido_usuario": apellidoUsuario,
+        "nombre_tecnico": nombreTecnico,
+        "apellido_tecnico": apellidoTecnico,
       };
 }
 
