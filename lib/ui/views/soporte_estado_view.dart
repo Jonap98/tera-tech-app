@@ -37,24 +37,12 @@ class _SoporteEstadoViewState extends State<SoporteEstadoView> {
 
   @override
   void initState() {
-    super.initState();
-
-    //   idUser = LocalStorage.prefs.getInt('id_usuario');
-    //   idRol = LocalStorage.prefs.getInt('rol');
-    //   // datos = Provider.of<SolicitudesProvider>(context, listen: false)
-    //   //     .getSolicitudes(idUser!);
-    //   if (idRol == 1) {
-    //     datos = Provider.of<SolicitudesProvider>(context, listen: false)
-    //         .getSolicitudesEstado(null, estado.id);
-    //   } else if (idRol == 2) {
-    //     datos = Provider.of<SolicitudesProvider>(context, listen: false)
-    //         .getSolicitudesEstadoTecnico(null, estado.id, idUser!);
-    //   }
     idUser = LocalStorage.prefs.getInt('id_usuario')!;
     idRol = LocalStorage.prefs.getInt('rol')!;
+    WidgetsBinding.instance!.addPostFrameCallback((_) {});
+    super.initState();
     aplicaFiltros =
         Provider.of<SolicitudesProvider>(context, listen: false).hayFiltros;
-
     if (aplicaFiltros) {
       cliente = Provider.of<RecursosProvider>(context, listen: false)
           .obtenerClienteSeleccionado;
@@ -88,22 +76,10 @@ class _SoporteEstadoViewState extends State<SoporteEstadoView> {
             .getSolicitudesEstadoTecnico(null, estado.id, idUser);
       }
     }
-    // futureDatos = datos;
   }
 
   @override
   Widget build(BuildContext context) {
-    // datos = Provider.of<SolicitudesProvider>(context, listen: false)
-    //     .getSolicitudes(idUser!);
-
-    // if (aplicaFiltros) {
-    //   print('Filtros');
-    // } else {
-    //   futureDatos = datos;
-    // }
-
-    // }
-
     return Container(
       margin: const EdgeInsets.only(top: 30, left: 50, right: 50),
       width: double.infinity,

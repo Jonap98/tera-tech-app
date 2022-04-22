@@ -43,42 +43,33 @@ class EstadosSolicitudesView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          Container(
-            child: _DropdownClientes(selectedValue: clienteSeleccionado),
-            width: 200,
-          ),
           (idRol == 1)
-              ? Container(
-                  child: DropdownTecnicos(selectedValue: tecnicoSeleccionado),
-                  width: 210,
-                )
-              : Container(width: 20),
-          ElevatedButton(
-            onPressed: () {
-              // final cliente =
-              //     Provider.of<RecursosProvider>(context, listen: false)
-              //         .obtenerClienteSeleccionado;
-              // final tecnico =
-              //     Provider.of<RecursosProvider>(context, listen: false)
-              //         .obtenerTecnicoSeleccionado;
+              ? Wrap(
+                  children: [
+                    Container(
+                      child:
+                          _DropdownClientes(selectedValue: clienteSeleccionado),
+                      width: 200,
+                    ),
+                    Container(
+                      child:
+                          DropdownTecnicos(selectedValue: tecnicoSeleccionado),
+                      width: 210,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        solicitudesProvider.aplicarFiltros();
 
-              // print('Cliente: ${cliente.name}');
-              // print('Técnico: $tecnicoSeleccionado');
-              solicitudesProvider.aplicarFiltros();
-              // Provider.of<RecursosProvider>(context, listen: false)
-              //     .cargarCliente(cliente);
-              // Provider.of<RecursosProvider>(context, listen: false)
-              //     .cargarTecnico(tecnico);
-              Future.delayed(Duration(milliseconds: 300), () {
-                NavigationService.navigateTo(
-                    Flurorouter.solicitudesEstadosRoute);
-              });
-              // Provider.of<RecursosProvider>(context, listen: false)
-              //     .cargarFiltros(
-              //         clienteSeleccionado!.id, tecnicoSeleccionado!.id);
-            },
-            child: const Text('Buscar'),
-          ),
+                        Future.delayed(Duration(milliseconds: 300), () {
+                          NavigationService.navigateTo(
+                              Flurorouter.solicitudesEstadosRoute);
+                        });
+                      },
+                      child: const Text('Buscar'),
+                    ),
+                  ],
+                )
+              : Container(),
           Wrap(
             // ignore: prefer_const_literals_to_create_immutables
             children: [

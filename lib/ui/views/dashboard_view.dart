@@ -53,94 +53,128 @@ class _DashboardViewState extends State<DashboardView> {
                     context, Flurorouter.solicitarSoporteRoute),
                 child: Text('Solicitar soporte'),
               ),
-              // CustomElevatedButton(text: 'Solicitar soporte'),
             ],
           ),
           SizedBox(height: 20),
           Expanded(
-              // width: size.width,
-              // height: size.height,
-              child: Container(
-            // color: Colors.redAccent,
-            child: FutureBuilder(
-              future: datos,
-              builder: (BuildContext context,
-                  AsyncSnapshot<SolicitudesResponse> snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data!.datos.isNotEmpty) {
-                    return ListView.builder(
-                      physics: ClampingScrollPhysics(), // Evita que rebote
-                      // itemCount: solicitudes.length,
-                      itemCount: snapshot.data!.solicitudesCount,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                onTap: () => print('Click'),
-                                child: Container(
-                                  // margin: const EdgeInsets.only(bottom: 10),
-                                  padding: const EdgeInsets.all(20),
-                                  // color: Colors.redAccent,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  width: double.infinity,
-                                  height: 100,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        snapshot.data!.datos[index]
-                                            .nombreCategoria!,
-                                        // '${solicitudes[index]['nombre']}',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
+            child: Container(
+              child: FutureBuilder(
+                future: datos,
+                builder: (BuildContext context,
+                    AsyncSnapshot<SolicitudesResponse> snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.datos.isNotEmpty) {
+                      return ListView.builder(
+                        physics: ClampingScrollPhysics(),
+                        itemCount: snapshot.data!.solicitudesCount,
+                        itemBuilder: (context, index) {
+                          final day = snapshot.data!.datos[index].fechaCita
+                              .substring(8, 10);
+                          final month = snapshot.data!.datos[index].fechaCita
+                              .substring(5, 7);
+                          final year = snapshot.data!.datos[index].fechaCita
+                              .substring(0, 4);
+                          return Column(
+                            children: [
+                              MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: GestureDetector(
+                                  onTap: () => print('Click'),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    width: double.infinity,
+                                    height: 100,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Wrap(
+                                          children: [
+                                            Text(
+                                              snapshot.data!.datos[index]
+                                                  .nombreCategoria!,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            (snapshot.data!.datos[index]
+                                                        .comentario !=
+                                                    null)
+                                                ? Text(
+                                                    snapshot.data!.datos[index]
+                                                        .comentario!,
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                    ),
+                                                  )
+                                                : Container(),
+                                          ],
                                         ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        snapshot.data!.datos[index].fechaCita,
-                                        // '${snapshot.data!.datos[index].fechaCita.day}/${snapshot.data!.datos[index].fechaCita.month}/${snapshot.data!.datos[index].fechaCita.year} - ${snapshot.data!.datos[index].estado}',
-                                        // '${solicitudes[index]['fecha']} - ${solicitudes[index]['estado']}',
-                                        style: TextStyle(
-                                          fontSize: 20,
+                                        SizedBox(height: 10),
+                                        Wrap(
+                                          children: [
+                                            Text(
+                                              'Fecha cita: $day/$month/$year',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+                                            (snapshot.data!.datos[index]
+                                                        .fechaListo !=
+                                                    null)
+                                                ? Text(
+                                                    ' | Fecha entrega: ${snapshot.data!.datos[index].fechaListo}',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    ' | Fecha de entrega: PTE',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                    ),
+                                                  ),
+                                            (snapshot.data!.datos[index]
+                                                        .idEstado ==
+                                                    6)
+                                                ? Text(
+                                                    ' | Estatus: ${snapshot.data!.datos[index].nombreEstado} - Favor de pasar a recojer',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                    ),
+                                                  )
+                                                : Container(),
+                                          ],
                                         ),
-                                      ),
-                                      // Divider()
-                                    ],
+                                        // Divider()
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        );
-                      },
-                    );
+                              SizedBox(height: 10),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      return Center(
+                          child: Text('No hay solicitudes para mostrar'));
+                    }
                   } else {
-                    return Center(
-                        child: Text('No hay solicitudes para mostrar'));
+                    return Center(child: CircularProgressIndicator());
                   }
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
+                },
+              ),
             ),
-          ))
-          // child: ListView.builder(
-          //   itemCount: 1,
-          //   itemBuilder: (context, itemCount) {
-          //     return Container(
-          //       color: Colors.redAccent,
-          //       width: double.infinity,
-          //     );
-          //   },
-          // ),
+          )
         ],
       ),
     );
