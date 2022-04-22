@@ -362,16 +362,6 @@ class SolicitudesProvider extends ChangeNotifier {
     return _fecha;
   }
 
-  bool _disponibilidad = true;
-  cargarDisponibilidad(bool disponibilidad) {
-    _disponibilidad = disponibilidad;
-    notifyListeners();
-  }
-
-  bool get obtenerDisponibilidad {
-    return _disponibilidad;
-  }
-
   bool _detalle = false;
   cargarDetalle(bool detalle) {
     _detalle = detalle;
