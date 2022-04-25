@@ -44,15 +44,13 @@ class _TicketViewState extends State<TicketView> {
     idTecnico =
         Provider.of<RecursosProvider>(context, listen: false).obtenerIdTecnico;
 
-    tecnico = Provider.of<RecursosProvider>(context, listen: false)
-        .obtenerTecnicoSeleccionado;
-
     solicitudesProvider =
         Provider.of<SolicitudesProvider>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
+    tecnico = Provider.of<RecursosProvider>(context).obtenerTecnicoSeleccionado;
     final idRol = LocalStorage.prefs.getInt('rol');
     // idRol == 1 - Admin
     // idRol == 2 - Técnico

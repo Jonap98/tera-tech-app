@@ -63,7 +63,9 @@ class Sidebar extends StatelessWidget {
                 )
               // : Container(),
               // const SizedBox(height: 10),
-              : SidebarOption(
+              : Container(),
+          (idRol == 1)
+              ? SidebarOption(
                   icon: Icons.list_alt,
                   text: 'Tickets histórico',
                   onTap: () {
@@ -71,7 +73,8 @@ class Sidebar extends StatelessWidget {
                     NavigationService.navigateTo(
                         Flurorouter.historicoDeTicketsRoute);
                   },
-                ),
+                )
+              : Container(),
           const Spacer(),
           SidebarOption(
             icon: Icons.list_alt,

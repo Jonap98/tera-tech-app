@@ -10,16 +10,16 @@ class CafeApi {
   static Dio _dio2 = Dio();
 
   static void configureDio() async {
-    // Base del URL
-    _dio.options.baseUrl = 'http://127.0.0.1:8000/api';
+    // // Base del URL
+    // _dio.options.baseUrl = 'http://127.0.0.1:8000/api';
     // Base URL NGROK
     // _dio.options.baseUrl = '$url/api';
     // Url Ngrok
     // _dio.options.baseUrl = 'https://66e4-201-172-233-80.ngrok.io/api';
 
     // Url ngrok
-    // final url = await obtenerUrl();
-    // _dio.options.baseUrl = '${url.toString()}/api';
+    final url = await obtenerUrl();
+    _dio.options.baseUrl = '${url.toString()}/api';
 
     // Headers
     _dio.options.headers = {
