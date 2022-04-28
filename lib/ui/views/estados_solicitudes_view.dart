@@ -33,125 +33,128 @@ class EstadosSolicitudesView extends StatelessWidget {
       // margin: const EdgeInsets.only(top: 30, left: 50, right: 50),
       margin: const EdgeInsets.all(30),
       padding: const EdgeInsets.all(50),
-      child: Wrap(
-        children: [
-          Container(
-            width: double.infinity,
-            child: Text(
-              'Estados',
-              style: CustomLabels.h1,
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Wrap(
+          children: [
+            Container(
+              width: double.infinity,
+              child: Text(
+                'Estados',
+                style: CustomLabels.h1,
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          (idRol == 1)
-              ? Wrap(
-                  children: [
-                    Container(
-                      child:
-                          _DropdownClientes(selectedValue: clienteSeleccionado),
-                      width: 200,
-                    ),
-                    Container(
-                      child:
-                          DropdownTecnicos(selectedValue: tecnicoSeleccionado),
-                      width: 210,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        solicitudesProvider.aplicarFiltros();
+            const SizedBox(height: 20),
+            (idRol == 1)
+                ? Wrap(
+                    children: [
+                      Container(
+                        child: _DropdownClientes(
+                            selectedValue: clienteSeleccionado),
+                        width: 200,
+                      ),
+                      Container(
+                        child: DropdownTecnicos(
+                            selectedValue: tecnicoSeleccionado),
+                        width: 210,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          solicitudesProvider.aplicarFiltros();
 
-                        Future.delayed(Duration(milliseconds: 300), () {
+                          Future.delayed(Duration(milliseconds: 300), () {
+                            NavigationService.navigateTo(
+                                Flurorouter.solicitudesEstadosRoute);
+                          });
+                        },
+                        child: const Text('Buscar'),
+                      ),
+                    ],
+                  )
+                : Container(),
+            Wrap(
+              // ignore: prefer_const_literals_to_create_immutables
+              children: [
+                (idRol == 1)
+                    ? EstadoElement(
+                        estado: 'Sin resolver',
+                        icon: Icons.markunread,
+                        cantidad: 30,
+                        onPressed: () {
+                          // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                          Provider.of<RecursosProvider>(context, listen: false)
+                              .cargarEstado(
+                                  Estado(id: 1, nombre: 'Sin resolver'));
                           NavigationService.navigateTo(
                               Flurorouter.solicitudesEstadosRoute);
-                        });
-                      },
-                      child: const Text('Buscar'),
-                    ),
-                  ],
-                )
-              : Container(),
-          Wrap(
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              (idRol == 1)
-                  ? EstadoElement(
-                      estado: 'Sin resolver',
-                      icon: Icons.markunread,
-                      cantidad: 30,
-                      onPressed: () {
-                        // NavigationService.navigateTo(Flurorouter.whiteRoute);
-                        Provider.of<RecursosProvider>(context, listen: false)
-                            .cargarEstado(
-                                Estado(id: 1, nombre: 'Sin resolver'));
-                        NavigationService.navigateTo(
-                            Flurorouter.solicitudesEstadosRoute);
-                      }
-                      // onPressed: NavigationService.navigateTo(
-                      //     Flurorouter.solicitudesEstadosRoute),
-                      )
-                  : Container(),
-              (idRol == 1)
-                  ? EstadoElement(
-                      estado: 'Abierto',
-                      icon: Icons.drafts,
-                      cantidad: 3,
-                      onPressed: () {
-                        // NavigationService.navigateTo(Flurorouter.whiteRoute);
-                        Provider.of<RecursosProvider>(context, listen: false)
-                            .cargarEstado(Estado(id: 2, nombre: 'Abierto'));
-                        NavigationService.navigateTo(
-                            Flurorouter.solicitudesEstadosRoute);
-                      })
-                  : Container(),
-              EstadoElement(
-                  estado: 'Asignado',
-                  icon: Icons.assignment_ind,
-                  cantidad: 0,
-                  onPressed: () {
-                    // NavigationService.navigateTo(Flurorouter.whiteRoute);
-                    Provider.of<RecursosProvider>(context, listen: false)
-                        .cargarEstado(Estado(id: 3, nombre: 'Asignado'));
-                    // Provider.of<RecursosProvider>(context)
-                    //     .cargarEstado(Estado(id: 3, nombre: 'Asignado'));
-                    NavigationService.navigateTo(
-                        Flurorouter.solicitudesEstadosRoute);
-                  }),
-              EstadoElement(
-                  estado: 'En espera',
-                  icon: Icons.watch_later,
-                  cantidad: 9,
-                  onPressed: () {
-                    // NavigationService.navigateTo(Flurorouter.whiteRoute);
-                    Provider.of<RecursosProvider>(context, listen: false)
-                        .cargarEstado(Estado(id: 4, nombre: 'En espera'));
-                    NavigationService.navigateTo(
-                        Flurorouter.solicitudesEstadosRoute);
-                  }),
-              EstadoElement(
-                  estado: 'Detalle',
-                  icon: Icons.assignment_return,
-                  cantidad: 5,
-                  onPressed: () {
-                    // NavigationService.navigateTo(Flurorouter.whiteRoute);
-                    Provider.of<RecursosProvider>(context, listen: false)
-                        .cargarEstado(Estado(id: 5, nombre: 'Detalle'));
-                    NavigationService.navigateTo(
-                        Flurorouter.solicitudesEstadosRoute);
-                  }),
-              EstadoElement(
-                  estado: 'Listo',
-                  icon: Icons.assignment_turned_in,
-                  cantidad: 10,
-                  onPressed: () {
-                    // NavigationService.navigateTo(Flurorouter.whiteRoute);
-                    Provider.of<RecursosProvider>(context, listen: false)
-                        .cargarEstado(Estado(id: 6, nombre: 'Listo'));
-                    NavigationService.navigateTo(
-                        Flurorouter.solicitudesEstadosRoute);
-                  }),
-            ],
-          ),
-        ],
+                        }
+                        // onPressed: NavigationService.navigateTo(
+                        //     Flurorouter.solicitudesEstadosRoute),
+                        )
+                    : Container(),
+                (idRol == 1)
+                    ? EstadoElement(
+                        estado: 'Abierto',
+                        icon: Icons.drafts,
+                        cantidad: 3,
+                        onPressed: () {
+                          // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                          Provider.of<RecursosProvider>(context, listen: false)
+                              .cargarEstado(Estado(id: 2, nombre: 'Abierto'));
+                          NavigationService.navigateTo(
+                              Flurorouter.solicitudesEstadosRoute);
+                        })
+                    : Container(),
+                EstadoElement(
+                    estado: 'Asignado',
+                    icon: Icons.assignment_ind,
+                    cantidad: 0,
+                    onPressed: () {
+                      // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                      Provider.of<RecursosProvider>(context, listen: false)
+                          .cargarEstado(Estado(id: 3, nombre: 'Asignado'));
+                      // Provider.of<RecursosProvider>(context)
+                      //     .cargarEstado(Estado(id: 3, nombre: 'Asignado'));
+                      NavigationService.navigateTo(
+                          Flurorouter.solicitudesEstadosRoute);
+                    }),
+                EstadoElement(
+                    estado: 'En espera',
+                    icon: Icons.watch_later,
+                    cantidad: 9,
+                    onPressed: () {
+                      // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                      Provider.of<RecursosProvider>(context, listen: false)
+                          .cargarEstado(Estado(id: 4, nombre: 'En espera'));
+                      NavigationService.navigateTo(
+                          Flurorouter.solicitudesEstadosRoute);
+                    }),
+                EstadoElement(
+                    estado: 'Detalle',
+                    icon: Icons.assignment_return,
+                    cantidad: 5,
+                    onPressed: () {
+                      // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                      Provider.of<RecursosProvider>(context, listen: false)
+                          .cargarEstado(Estado(id: 5, nombre: 'Detalle'));
+                      NavigationService.navigateTo(
+                          Flurorouter.solicitudesEstadosRoute);
+                    }),
+                EstadoElement(
+                    estado: 'Listo',
+                    icon: Icons.assignment_turned_in,
+                    cantidad: 10,
+                    onPressed: () {
+                      // NavigationService.navigateTo(Flurorouter.whiteRoute);
+                      Provider.of<RecursosProvider>(context, listen: false)
+                          .cargarEstado(Estado(id: 6, nombre: 'Listo'));
+                      NavigationService.navigateTo(
+                          Flurorouter.solicitudesEstadosRoute);
+                    }),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
