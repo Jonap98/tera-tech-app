@@ -42,7 +42,7 @@ class Sidebar extends StatelessWidget {
           (idRol == 1)
               ? SidebarOption(
                   icon: Icons.home_repair_service_rounded,
-                  text: 'Registrar empleado',
+                  text: 'Registrar técnico',
                   onTap: () {
                     SideMenuProvider.closeMenu();
                     NavigationService.navigateTo(

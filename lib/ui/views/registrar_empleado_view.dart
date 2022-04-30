@@ -46,7 +46,7 @@ class RegistrarEmpleadoView extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                'Registrar empleado',
+                'Registrar técnico',
                 style: CustomLabels.h1,
               ),
               const SizedBox(height: 20),
@@ -128,8 +128,8 @@ class RegistrarEmpleadoView extends StatelessWidget {
                                 icon: Icons.mail,
                               ),
                             ),
-                            const SizedBox(height: 10),
-                            const _RolesDropdown(),
+                            // const SizedBox(height: 10),
+                            // const _RolesDropdown(),
                             const SizedBox(height: 10),
                             const _EspecialidadesDropdown(),
                             const SizedBox(height: 10),
@@ -142,10 +142,10 @@ class RegistrarEmpleadoView extends StatelessWidget {
                                     registerFormProvider.validateForm();
                                 if (!validForm) return;
 
-                                final rol = Provider.of<RecursosProvider>(
-                                        context,
-                                        listen: false)
-                                    .obtenerRolSeleccionado;
+                                // final rol = Provider.of<RecursosProvider>(
+                                //         context,
+                                //         listen: false)
+                                //     .obtenerRolSeleccionado;
 
                                 final especialidad =
                                     Provider.of<RecursosProvider>(context,
@@ -155,11 +155,11 @@ class RegistrarEmpleadoView extends StatelessWidget {
                                 // print('Rol: ${rol.nombre}');
                                 // print('Especialidad: ${especialidad.nombre}');
 
-                                if (rol.nombre == '') {
-                                  NotificationService.genericDialog(
-                                      context, 'El rol es obligatorio');
-                                } else if (rol.id == 2 &&
-                                    especialidad.nombre == '') {
+                                // if (rol.nombre == '') {
+                                //   NotificationService.genericDialog(
+                                //       context, 'El rol es obligatorio');
+                                // } else if (rol.id == 2 &&
+                                if (especialidad.nombre == '') {
                                   NotificationService.genericDialog(context,
                                       'La especialidad es obligatoria');
                                 } else {
@@ -176,7 +176,8 @@ class RegistrarEmpleadoView extends StatelessWidget {
                                     registerFormProvider.lastName,
                                     registerFormProvider.email,
                                     pass,
-                                    rol.id,
+                                    // rol.id,
+                                    2,
                                     especialidad.id,
                                   );
                                 }
