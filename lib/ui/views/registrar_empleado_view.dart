@@ -2,6 +2,7 @@
 
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tera_tech_app/models/especialidades_model.dart';
 import 'package:tera_tech_app/models/roles_model.dart';
@@ -78,6 +79,12 @@ class RegistrarEmpleadoView extends StatelessWidget {
                             TextFormField(
                               onChanged: (value) =>
                                   registerFormProvider.name = value,
+                              keyboardType: TextInputType.text,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'[a-zA-Z]+\s*'),
+                                ),
+                              ],
                               validator: (value) {
                                 if (value == null || value.isEmpty)
                                   return 'El nombre es obligatorio';
@@ -97,6 +104,12 @@ class RegistrarEmpleadoView extends StatelessWidget {
                             TextFormField(
                               onChanged: (value) =>
                                   registerFormProvider.lastName = value,
+                              keyboardType: TextInputType.text,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'[a-zA-Z]+\s*'),
+                                ),
+                              ],
                               validator: (value) {
                                 if (value == null || value.isEmpty)
                                   return 'El apellido es obligatorio';

@@ -216,12 +216,16 @@ class SolicitudesProvider extends ChangeNotifier {
     BuildContext context,
     int idSolicitud,
     bool detalle,
-    String comentario,
+    String comentarioSolucion,
+    String comentarioDetalle,
     String fechaListo,
   ) {
     final data = {
       'detalle': (detalle) ? 1 : 0,
-      'comentario': (comentario.isNotEmpty) ? comentario.toString() : null,
+      'comentario_solucion': (comentarioSolucion.isNotEmpty)
+          ? comentarioSolucion.toString()
+          : null,
+      'comentario_detalle': (detalle) ? comentarioDetalle.toString() : null,
       'fecha_listo': fechaListo.toString(),
     };
 

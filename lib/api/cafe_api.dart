@@ -11,8 +11,8 @@ class CafeApi {
 
   static void configureDio() async {
     // // Base del URL
-    // _dio.options.baseUrl = 'http://127.0.0.1:8000/api';
-    _dio.options.baseUrl = 'https://teratech-api-mj.herokuapp.com/api';
+    _dio.options.baseUrl = 'http://127.0.0.1:8000/api';
+    // _dio.options.baseUrl = 'https://teratech-api-mj.herokuapp.com/api';
     // Base URL NGROK
     // _dio.options.baseUrl = '$url/api';
     // Url Ngrok

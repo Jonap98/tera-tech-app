@@ -3,9 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tera_tech_app/models/solicitudes_model.dart';
+import 'package:tera_tech_app/providers/recursos_provider.dart';
 import 'package:tera_tech_app/providers/solicitudes_provider.dart';
 import 'package:tera_tech_app/router/router.dart';
 import 'package:tera_tech_app/services/local_storage.dart';
+import 'package:tera_tech_app/services/navigation_service.dart';
 import 'package:tera_tech_app/ui/labels/custom_labels.dart';
 // import 'package:tera_tech_app/ui/buttons/boton_azul.dart';
 
@@ -79,7 +81,35 @@ class _DashboardViewState extends State<DashboardView> {
                               MouseRegion(
                                 cursor: SystemMouseCursors.click,
                                 child: GestureDetector(
-                                  onTap: () => print('Click'),
+                                  onTap: () {
+                                    // Provider.of<SolicitudesProvider>(context,
+                                    //         listen: false)
+                                    //     .cargarSolicitud(
+                                    //         snapshot.data!.datos[index]);
+                                    Provider.of<RecursosProvider>(context,
+                                            listen: false)
+                                        .cargarIdsSolicitud(
+                                      snapshot.data!.datos[index].id,
+                                      snapshot.data!.datos[index].idEstado,
+                                      // snapshot.data!.datos[index].idTecnico!,
+                                    );
+
+                                    // Provider.of<RecursosProvider>(context,
+                                    //         listen: false)
+                                    //     .getTecnicoPorId(
+                                    //         datos.idTecnico!, datos.idEstado);
+                                    if (snapshot.data!.datos[index].idTecnico !=
+                                        null) {
+                                      Provider.of<RecursosProvider>(context,
+                                              listen: false)
+                                          .getTecnicoPorId(snapshot
+                                              .data!.datos[index].idTecnico!);
+                                      print(
+                                          'Técnico seleccionado: ${snapshot.data!.datos[index].idTecnico}');
+                                    }
+                                    NavigationService.navigateTo(
+                                        Flurorouter.ticketDeSolicitudRoute);
+                                  },
                                   child: Container(
                                     padding: const EdgeInsets.all(20),
                                     decoration: BoxDecoration(
@@ -104,13 +134,20 @@ class _DashboardViewState extends State<DashboardView> {
                                             ),
                                             SizedBox(width: 10),
                                             (snapshot.data!.datos[index]
-                                                        .comentario !=
+                                                        .comentarioSolucion !=
                                                     null)
-                                                ? Text(
-                                                    snapshot.data!.datos[index]
-                                                        .comentario!,
-                                                    style: TextStyle(
-                                                      fontSize: 20,
+                                                ? Container(
+                                                    width: 500,
+                                                    child: Text(
+                                                      snapshot
+                                                          .data!
+                                                          .datos[index]
+                                                          .comentarioSolucion!,
+                                                      style: TextStyle(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        fontSize: 20,
+                                                      ),
                                                     ),
                                                   )
                                                 : Container(),

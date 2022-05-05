@@ -49,7 +49,8 @@ class Dato {
     this.descripcion,
     required this.fechaCita,
     this.imagen,
-    this.comentario,
+    this.comentarioSolucion,
+    this.comentarioDetalle,
     this.fechaListo,
     this.fechaReal,
     this.nombreCategoria,
@@ -68,7 +69,8 @@ class Dato {
   String? descripcion;
   String fechaCita;
   String? imagen;
-  String? comentario;
+  String? comentarioSolucion;
+  String? comentarioDetalle;
   String? fechaListo;
   String? fechaReal;
   String? nombreCategoria;
@@ -88,7 +90,8 @@ class Dato {
         fechaCita: json["fecha_cita"],
         // fechaCita: DateTime.parse(json["fecha_cita"]),
         imagen: json["imagen"],
-        comentario: json["comentario"],
+        comentarioSolucion: json["comentario_solucion"],
+        comentarioDetalle: json["comentario_detalle"],
         fechaListo: json["fecha_listo"],
         fechaReal: json["fecha_real"],
         nombreCategoria: json["nombre_categoria"],
@@ -110,7 +113,8 @@ class Dato {
         "fecha_cita": fechaCita,
         // "${fechaCita.year.toString().padLeft(4, '0')}-${fechaCita.month.toString().padLeft(2, '0')}-${fechaCita.day.toString().padLeft(2, '0')}",
         "imagen": imagen,
-        "comentario": comentario,
+        "comentario_solucion": comentarioSolucion,
+        "comentario_detalle": comentarioDetalle,
         "fecha_listo": fechaListo,
         // "${fechaListo!.year.toString().padLeft(4, '0')}-${fechaListo!.month.toString().padLeft(2, '0')}-${fechaListo!.day.toString().padLeft(2, '0')}",
         "fecha_real": fechaReal,

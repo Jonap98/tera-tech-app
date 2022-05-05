@@ -175,13 +175,56 @@ class _TicketViewState extends State<TicketView> {
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
-                            const SizedBox(height: 10),
                             Text(
                               '${snapshot.data!.datos[0].descripcion}',
                               style: TextStyle(
                                 fontSize: 20,
                               ),
                             ),
+                            const SizedBox(height: 10),
+                            (snapshot.data!.datos[0].idEstado != 1 &&
+                                    snapshot.data!.datos[0].idEstado != 3)
+                                ? Text(
+                                    'Solución',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  )
+                                : Container(),
+                            (snapshot.data!.datos[0].idEstado != 1 &&
+                                    snapshot.data!.datos[0].idEstado != 3)
+                                ? Text(
+                                    snapshot.data!.datos[0]
+                                            .comentarioSolucion ??
+                                        'Sin comentario de sulución',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  )
+                                : Container(),
+                            const SizedBox(height: 10),
+                            (snapshot.data!.datos[0].idEstado == 5 ||
+                                    snapshot.data!.datos[0].idEstado == 6)
+                                ? Text(
+                                    'Detalle',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  )
+                                : Container(),
+                            (snapshot.data!.datos[0].idEstado == 5 ||
+                                    snapshot.data!.datos[0].idEstado == 6)
+                                ? Text(
+                                    snapshot.data!.datos[0].comentarioDetalle ??
+                                        'Sin comentario de detalle',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  )
+                                : Container(),
+                            // const SizedBox(height: 10),
                             const SizedBox(height: 10),
                             (snapshot.data!.datos[0].imagen != null)
                                 ? Center(
@@ -252,7 +295,10 @@ class _TicketViewState extends State<TicketView> {
                                                   3 ||
                                               snapshot.data!.datos[0]
                                                       .idEstado ==
-                                                  4)
+                                                  4 ||
+                                              snapshot.data!.datos[0]
+                                                      .idEstado ==
+                                                  5)
                                           ? _CustomButton(
                                               text: 'Cerrar solicitud',
                                               color: Colors.redAccent,
@@ -316,23 +362,25 @@ class _TicketViewState extends State<TicketView> {
 
   Future<dynamic> _atenderSolicitudDialog(
       BuildContext context, int idSolicitud) {
-    TextEditingController comentarioCtrl = TextEditingController();
+    TextEditingController comentarioSolucionCtrl = TextEditingController();
+    TextEditingController comentarioDetalleCtrl = TextEditingController();
+    final detalle =
+        Provider.of<SolicitudesProvider>(context, listen: false).obtenerDetalle;
 
     return showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (builder) {
         return AlertDialog(
           content: Container(
-            height: 475,
-            width: 350,
-            child: Column(
+            height: 530,
+            width: 370,
+            child: ListView(
               children: [
                 const Text(
                   'Atender solicitud',
                   style: TextStyle(fontSize: 25),
                 ),
-                const SizedBox(height: 15),
-                _CheckBoxDetalle(valor: false),
                 // Container(
                 //   width: double.infinity,
                 //   child: Text('Detalle'),
@@ -348,11 +396,11 @@ class _TicketViewState extends State<TicketView> {
                 const SizedBox(height: 15),
                 Container(
                   width: double.infinity,
-                  child: Text('Comentario:'),
+                  child: Text('Comentario solución:'),
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
-                  controller: comentarioCtrl,
+                  controller: comentarioSolucionCtrl,
                   minLines: 1,
                   keyboardType: TextInputType.multiline,
                   maxLines: 5,
@@ -375,6 +423,12 @@ class _TicketViewState extends State<TicketView> {
                     fillColor: const Color(0xffEDF1F2),
                   ),
                 ),
+                // const SizedBox(height: 10),
+                _CheckBoxDetalle(valor: false),
+                const SizedBox(height: 10),
+                DetalleColumn(controller: comentarioDetalleCtrl),
+                // const SizedBox(height: 10),
+                // (detalle) ? TextField() : Container(),
                 // _textFormField(),
                 const SizedBox(height: 25),
                 _CustomButton(
@@ -388,57 +442,45 @@ class _TicketViewState extends State<TicketView> {
                         Provider.of<SolicitudesProvider>(context, listen: false)
                             .obtenerFecha;
                     // Navigator.pop(context);
-                    print('detalle: $detalle');
-                    print('comentarioCtrl: ${comentarioCtrl.text}');
-                    print('fechaCierre: $fecha');
+                    // print('detalle: $detalle');
+                    // print('comentarioCtrl: ${comentarioCtrl.text}');
+                    // print('fechaCierre: $fecha');
 
-                    // Future.delayed(Duration(milliseconds: 5000), () {
-                    print('context: $context');
-                    print('idSolicitud: $idSolicitud');
-                    print('detalle: $detalle');
-                    print('comentarioCtrl: ${comentarioCtrl.text}');
-                    if (fecha.isEmpty) {
-                      print(DateTime.now().toString().substring(0, 16));
-                    } else {
-                      print('fechaCierre: ${fecha.substring(0, 16)}');
-                    }
+                    // // Future.delayed(Duration(milliseconds: 5000), () {
+                    // print('context: $context');
+                    // print('idSolicitud: $idSolicitud');
+                    // print('detalle: $detalle');
+                    // print('Solución: ${comentarioSolucionCtrl.text}');
+                    // (detalle)
+                    //     ? print('Detalle: ${comentarioDetalleCtrl.text}')
+                    //     : print('Sin detalle');
+                    // if (fecha.isEmpty) {
+                    //   // print(DateTime.now().toString().substring(0, 16));
+                    // } else {
+                    //   // print('fechaCierre: ${fecha.substring(0, 16)}');
+                    // }
 
                     // final solicitudAtendida =
                     solicitudesProvider.atenderSolicitud(
                       context,
                       idSolicitud,
                       detalle,
-                      comentarioCtrl.text,
+                      comentarioSolucionCtrl.text,
+                      comentarioDetalleCtrl.text,
                       (fecha.isNotEmpty)
                           ? fecha.substring(0, 16)
                           : DateTime.now().toString().substring(0, 16),
                     );
-                    // if (solicitudAtendida) {
-                    //   final det = Provider.of<SolicitudesProvider>(context,
-                    //           listen: false)
-                    //       .inicializarDetalle();
-                    //   print('Detalle final: $det');
-                    //   NotificationService.solicitudExitosa(
-                    //       context,
-                    //       'Solicitud atendida exitosamente',
-                    //       Flurorouter.estadosSoporteRoute);
-                    //   // NavigationService.navigateTo(
-                    //   //     Flurorouter.estadosSoporteRoute);
-                    // }
-
-                    // });
-
-                    // Fecha con ctrl no sirve
-                    // print('fechaCierreCtrl: ${fechaCierreCtrl.text}');
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (builder) {
-                    //     return AlertDialog(
-                    //       content: Text(
-                    //           'Atención de solicitud registrada exitosamente.'),
-                    //     );
-                    //   },
-                    // );
+                  },
+                ),
+                const SizedBox(height: 10),
+                _CustomButton(
+                  text: 'Cancelar',
+                  color: Colors.redAccent,
+                  onPressed: () {
+                    Provider.of<SolicitudesProvider>(context, listen: false)
+                        .cargarDetalle(false);
+                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -547,6 +589,74 @@ class _TicketViewState extends State<TicketView> {
         );
       },
     );
+  }
+}
+
+class DetalleColumn extends StatefulWidget {
+  TextEditingController controller = TextEditingController();
+
+  DetalleColumn({
+    required this.controller,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<DetalleColumn> createState() => _DetalleColumnState();
+}
+
+class _DetalleColumnState extends State<DetalleColumn> {
+  // bool myvalue = false;
+
+  // void onchange(bool value) {
+  //   setState(() {
+  //     myvalue = value; // I need the parent to receive this one!
+  //     print('value is: $value');
+  //   });
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    // TextEditingController comentarioCtrl = TextEditingController();
+
+    final detalle = Provider.of<SolicitudesProvider>(context).obtenerDetalle;
+    // bool valor = false;
+
+    return (detalle)
+        ? Column(
+            children: [
+              Container(
+                width: double.infinity,
+                child: Text('Comentario detalle:'),
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: widget.controller,
+                minLines: 1,
+                keyboardType: TextInputType.multiline,
+                maxLines: 5,
+                maxLength: 500,
+                // onChanged: (value) {
+                //   print(value);
+                // },
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Color(0xffEDF1F2), width: 2),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Color(0xffEDF1F2), width: 2),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  filled: true,
+                  fillColor: const Color(0xffEDF1F2),
+                ),
+              ),
+              // const SizedBox(height: 10),
+            ],
+          )
+        : Container();
   }
 }
 
