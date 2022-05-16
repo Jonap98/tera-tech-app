@@ -252,6 +252,32 @@ class SolicitudesProvider extends ChangeNotifier {
     return false;
   }
 
+  bool finalizarSolicitud(
+    BuildContext context,
+    int idSolicitud,
+    int idEstado,
+  ) {
+    final data = {
+      'id_estado': idEstado,
+    };
+
+    CafeApi.httpPost('/finalizar-solicitud/$idSolicitud', data).then((json) {
+      NotificationService.solicitudExitosa(context,
+          'Solicitud finalizada exitosamente', Flurorouter.estadosSoporteRoute);
+      // NavigationService.navigateTo(Flurorouter.whiteRoute);
+
+      CafeApi.configureDio();
+
+      notifyListeners();
+      return true;
+    }).catchError((e) {
+      NotificationService.showSnackbarError('Error');
+      // print(e);
+      return false;
+    });
+    return false;
+  }
+
   bool cerrarSolicitud(
     BuildContext context,
     int idSolicitud,

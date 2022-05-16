@@ -182,8 +182,9 @@ class _TicketViewState extends State<TicketView> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            (snapshot.data!.datos[0].idEstado != 1 &&
-                                    snapshot.data!.datos[0].idEstado != 3)
+                            (snapshot.data!.datos[0].comentarioSolucion !=
+                                        null &&
+                                    snapshot.data!.datos[0].idEstado != 1)
                                 ? Text(
                                     'Solución',
                                     style: TextStyle(
@@ -192,8 +193,9 @@ class _TicketViewState extends State<TicketView> {
                                     ),
                                   )
                                 : Container(),
-                            (snapshot.data!.datos[0].idEstado != 1 &&
-                                    snapshot.data!.datos[0].idEstado != 3)
+                            (snapshot.data!.datos[0].comentarioSolucion !=
+                                        null &&
+                                    snapshot.data!.datos[0].idEstado != 1)
                                 ? Text(
                                     snapshot.data!.datos[0]
                                             .comentarioSolucion ??
@@ -203,6 +205,31 @@ class _TicketViewState extends State<TicketView> {
                                     ),
                                   )
                                 : Container(),
+
+                            const SizedBox(height: 10),
+                            (snapshot.data!.datos[0].comentarioSolucion !=
+                                        null &&
+                                    snapshot.data!.datos[0].idEstado != 1)
+                                ? Text(
+                                    'Detalle',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  )
+                                : Container(),
+                            (snapshot.data!.datos[0].comentarioDetalle !=
+                                        null &&
+                                    snapshot.data!.datos[0].idEstado != 1)
+                                ? Text(
+                                    snapshot.data!.datos[0].comentarioDetalle ??
+                                        'Sin comentario de detalle',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  )
+                                : Container(),
+
                             const SizedBox(height: 10),
                             (snapshot.data!.datos[0].idEstado == 5 ||
                                     snapshot.data!.datos[0].idEstado == 6)
@@ -313,32 +340,55 @@ class _TicketViewState extends State<TicketView> {
                                           : Container()
                                   : (idRol == 2)
                                       ? (snapshot.data!.datos[0].idEstado == 3)
-                                          ? _CustomButton(
-                                              text: 'Atender solicitud',
-                                              color: Colors.blue,
-                                              onPressed: () {
-                                                _atenderSolicitudDialog(context,
-                                                    snapshot.data!.datos[0].id);
-                                              },
-                                            )
-                                          : (snapshot.data!.datos[0].idEstado ==
-                                                      4 ||
-                                                  snapshot.data!.datos[0]
-                                                          .idEstado ==
-                                                      5)
-                                              ? _CustomButton(
-                                                  text: 'Cerrar solicitud',
-                                                  color: Colors.redAccent,
+                                          ? Wrap(
+                                              children: [
+                                                _CustomButton(
+                                                  text: 'Atender solicitud',
+                                                  color: Colors.blue,
                                                   onPressed: () {
-                                                    _cerrarColicitudDialog(
-                                                      context,
-                                                      snapshot
-                                                          .data!.datos[0].id,
-                                                      solicitudesProvider,
-                                                    );
+                                                    _atenderSolicitudDialog(
+                                                        context,
+                                                        snapshot
+                                                            .data!.datos[0].id);
                                                   },
-                                                )
-                                              : Container()
+                                                ),
+                                                SizedBox(width: 10),
+                                                _CustomButton(
+                                                  text: 'Finalizar solicitud',
+                                                  color: Colors.green,
+                                                  onPressed: () {
+                                                    _finalizarSolicitudDialog(
+                                                        context,
+                                                        snapshot
+                                                            .data!.datos[0].id,
+                                                        (snapshot.data!.datos[0]
+                                                                    .comentarioDetalle ==
+                                                                null)
+                                                            ? 4
+                                                            : 5,
+                                                        solicitudesProvider);
+                                                  },
+                                                ),
+                                              ],
+                                            )
+                                          // : (snapshot.data!.datos[0].idEstado ==
+                                          //             4 ||
+                                          //         snapshot.data!.datos[0]
+                                          //                 .idEstado ==
+                                          //             5)
+                                          //     ? _CustomButton(
+                                          //         text: 'Cerrar solicitud',
+                                          //         color: Colors.redAccent,
+                                          //         onPressed: () {
+                                          //           _cerrarColicitudDialog(
+                                          //             context,
+                                          //             snapshot
+                                          //                 .data!.datos[0].id,
+                                          //             solicitudesProvider,
+                                          //           );
+                                          //         },
+                                          //       )
+                                          : Container()
                                       : Container(),
                             ),
                           ],
@@ -441,26 +491,7 @@ class _TicketViewState extends State<TicketView> {
                     final fecha =
                         Provider.of<SolicitudesProvider>(context, listen: false)
                             .obtenerFecha;
-                    // Navigator.pop(context);
-                    // print('detalle: $detalle');
-                    // print('comentarioCtrl: ${comentarioCtrl.text}');
-                    // print('fechaCierre: $fecha');
 
-                    // // Future.delayed(Duration(milliseconds: 5000), () {
-                    // print('context: $context');
-                    // print('idSolicitud: $idSolicitud');
-                    // print('detalle: $detalle');
-                    // print('Solución: ${comentarioSolucionCtrl.text}');
-                    // (detalle)
-                    //     ? print('Detalle: ${comentarioDetalleCtrl.text}')
-                    //     : print('Sin detalle');
-                    // if (fecha.isEmpty) {
-                    //   // print(DateTime.now().toString().substring(0, 16));
-                    // } else {
-                    //   // print('fechaCierre: ${fecha.substring(0, 16)}');
-                    // }
-
-                    // final solicitudAtendida =
                     solicitudesProvider.atenderSolicitud(
                       context,
                       idSolicitud,
@@ -481,6 +512,50 @@ class _TicketViewState extends State<TicketView> {
                     Provider.of<SolicitudesProvider>(context, listen: false)
                         .cargarDetalle(false);
                     Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<dynamic> _finalizarSolicitudDialog(
+    BuildContext context,
+    int idSolicitud,
+    int idEstado,
+    SolicitudesProvider solicitudesProvider,
+  ) {
+    return showDialog(
+      context: context,
+      builder: (builder) {
+        return AlertDialog(
+          content: Container(
+            height: 200,
+            width: 300,
+            child: Column(
+              children: [
+                const Text(
+                  '¿Seguro que desea finalizar la solicitud?',
+                  style: TextStyle(fontSize: 25),
+                ),
+                const SizedBox(height: 50),
+                _CustomButton(
+                  text: 'Finalizar solicitud',
+                  color: Colors.green,
+                  onPressed: () {
+                    print(idSolicitud);
+                    print('IdEstado: $idEstado');
+                    final solicitudFinalizada = solicitudesProvider
+                        .finalizarSolicitud(context, idSolicitud, idEstado);
+                    if (solicitudFinalizada) {
+                      NotificationService.solicitudExitosa(
+                          context,
+                          'Solicitud cerrada exitosamente',
+                          Flurorouter.estadosSoporteRoute);
+                    }
                   },
                 ),
               ],
