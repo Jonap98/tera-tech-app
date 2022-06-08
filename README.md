@@ -1,16 +1,29 @@
-# tera_tech_app
+# Teratech App
 
-A new Flutter project.
+Este es el repositorio de la aplicación web Teratech, creada con Flutter web y utilizando una api en laravel.
+Como gestor de estado se utilizó provider, por su fácil implementación y gran escalabilidad, además de que los tiempos de carga se llevan a cabo de manera óptima.
 
-## Getting Started
+Puntos a destacar en esta aplicación:
+- Sistema de autenticación
+- Persistencia de sesión mediante JWT
+- Manejo de rutas
 
-This project is a starting point for a Flutter application.
+## Propósito
 
-A few resources to get you started if this is your first Flutter project:
+Esta aplicación re realizó para otorgar un servicio de agendación de citas para soporte técnico en equipos de cómputo: computadoras, laptops y celulares.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Esta aplicación permite, entre otras funcionalidades:
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Agendar citas para soporte técnico, así como la visualización del estado en que se encuentran
+- Crear y ver solicitudes de soporte
+- Ver un historial de solicitudes atendidas por empleado
+
+A continuación se muestran algunas capturas de pantalla de la aplicación
+
+![image](https://user-images.githubusercontent.com/48542924/172714215-54e62e67-987d-44e3-95fb-668767abc79f.png)
+
+![image](https://user-images.githubusercontent.com/48542924/172714957-0c318323-8286-4865-a67b-5e727ed1141f.png)
+
+![image](https://user-images.githubusercontent.com/48542924/172715042-9be2e6a6-0bba-4ed1-813b-94183edb2750.png)
+
+
